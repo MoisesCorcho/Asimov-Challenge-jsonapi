@@ -8,6 +8,7 @@ use Carbon\Carbon;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Testing\TestResponse;
 
 class CreateAppointmentTest extends TestCase
 {
@@ -17,7 +18,6 @@ class CreateAppointmentTest extends TestCase
     /** @test */
     public function can_create_appointments()
     {
-
         $this->withoutExceptionHandling();
 
         $response = $this->postJson(route('api.v1.appointments.store'), [
@@ -69,69 +69,7 @@ class CreateAppointmentTest extends TestCase
             ]
         ]);
 
-        $response->assertJsonStructure([
-            'errors' => [
-                ['title', 'detail', 'source' => ['pointer']]
-            ]
-        ])->assertJsonFragment([
-            'source' => ['pointer' => '/data/attributes/date']
-        ])->assertHeader(
-            'content-type', 'application/vnd.api+json'
-        )->assertStatus(422);
-
-        // $response->assertJsonValidationErrors('data.attributes.date');
-    }
-
-    /** @test */
-    public function start_time_is_required()
-    {
-        $response = $this->postJson(route('api.v1.appointments.store'), [
-            'data' => [
-                'type' => 'appointments',
-                'attributes' => [
-                    'date' => date('Y-m-d'),
-                    'email' => 'falseemail@gmail.com'
-                ],
-            ]
-        ]);
-
-        $response->assertJsonStructure([
-            'errors' => [
-                ['title', 'detail', 'source' => ['pointer']]
-            ]
-        ])->assertJsonFragment([
-            'source' => ['pointer' => '/data/attributes/start_time']
-        ])->assertHeader(
-            'content-type', 'application/vnd.api+json'
-        )->assertStatus(422);
-
-        // $response->assertJsonValidationErrors('data.attributes.start_time');
-    }
-
-    /** @test */
-    public function email_is_required()
-    {
-        $response = $this->postJson(route('api.v1.appointments.store'), [
-            'data' => [
-                'type' => 'appointments',
-                'attributes' => [
-                    'date' => date('Y-m-d'),
-                    'start_time' => '08:00:00'
-                ],
-            ]
-        ]);
-
-        $response->assertJsonStructure([
-            'errors' => [
-                ['title', 'detail', 'source' => ['pointer']]
-            ]
-        ])->assertJsonFragment([
-            'source' => ['pointer' => '/data/attributes/email']
-        ])->assertHeader(
-            'content-type', 'application/vnd.api+json'
-        )->assertStatus(422);
-
-        // $response->assertJsonValidationErrors('data.attributes.email');
+        $response->assertJsonApiValidationErrors('date');
     }
 
     /** @test */
@@ -148,13 +86,7 @@ class CreateAppointmentTest extends TestCase
             ]
         ]);
 
-        $response->assertJsonStructure([
-            'errors' => [
-                ['title', 'detail', 'source' => ['pointer']]
-            ]
-        ])->assertJsonFragment([
-            'source' => ['pointer' => '/data/attributes/date']
-        ]);
+        $response->assertJsonApiValidationErrors('date');
     }
 
     /** @test */
@@ -172,13 +104,39 @@ class CreateAppointmentTest extends TestCase
             ]
         ]);
 
-        $response->assertJsonStructure([
-            'errors' => [
-                ['title', 'detail', 'source' => ['pointer']]
+        $response->assertJsonApiValidationErrors('date');
+    }
+
+    /** @test */
+    public function start_time_is_required()
+    {
+        $response = $this->postJson(route('api.v1.appointments.store'), [
+            'data' => [
+                'type' => 'appointments',
+                'attributes' => [
+                    'date' => date('Y-m-d'),
+                    'email' => 'falseemail@gmail.com'
+                ],
             ]
-        ])->assertJsonFragment([
-            'source' => ['pointer' => '/data/attributes/date']
         ]);
 
+        $response->assertJsonApiValidationErrors('start_time');
     }
+
+    /** @test */
+    public function email_is_required()
+    {
+        $response = $this->postJson(route('api.v1.appointments.store'), [
+            'data' => [
+                'type' => 'appointments',
+                'attributes' => [
+                    'date' => date('Y-m-d'),
+                    'start_time' => '08:00:00'
+                ],
+            ]
+        ]);
+
+        $response->assertJsonApiValidationErrors('email');
+    }
+
 }

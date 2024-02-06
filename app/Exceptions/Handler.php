@@ -35,7 +35,8 @@ class Handler extends ExceptionHandler
     {
         $title = $exception->getMessage();
 
-        /* Esta es otra manera de hacer el proceso de darle formato a los errores segun json api specification
+        /*
+        Esta es otra manera de hacer el proceso de darle formato a los errores segun json api specification
 
         $errors = [];
 
