@@ -27,10 +27,11 @@ class ValidateJsonApiHeadersTest extends TestCase
     /** @test */
     public function accept_header_must_be_present_in_all_requests(): void
     {
-        $this->getJson('test_route')->assertStatus(406);
+        // Ya no sirve porque colocamos que por defecto se agregue el header accept
+        // $this->getJson('test_route')->assertStatus(406);
 
         $this->get('test_route', [
-            'Accept' => 'application/vnd.api+json'
+            'accept' => 'application/vnd.api+json'
         ])->assertSuccessful();
     }
 

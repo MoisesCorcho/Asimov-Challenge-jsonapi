@@ -3,6 +3,10 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use App\Rules\CrossHoursRule;
+use App\Rules\WeekendsRule;
+use App\Rules\TimeIsNotInThePastRule;
+use App\Rules\OfficeTimeRule;
 
 class StoreAppointmentRequest extends FormRequest
 {
@@ -22,9 +26,23 @@ class StoreAppointmentRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'date'       => ['required', 'date_format:Y-m-d'],
-            'start_time' => ['required', 'date_format:H:i'],
-            'email'      => ['required', 'email']
+            'date'       => [
+                'required',
+                'date_format:Y-m-d',
+                'after_or_equal:'.now('America/Bogota')->toDateString(),
+                new WeekendsRule
+            ],
+            'start_time' => [
+                'required',
+                'date_format:H:i',
+                new TimeIsNotInThePastRule,
+                new CrossHoursRule,
+                new OfficeTimeRule
+            ],
+            'email'      => [
+                'required',
+                'email'
+            ]
         ];
     }
 

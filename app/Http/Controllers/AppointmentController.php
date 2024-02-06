@@ -27,6 +27,15 @@ class AppointmentController extends Controller
      */
     public function store(Request $request)
     {
+        $request->validate([
+            'data.attributes.date' => [
+                'required',
+                'date_format:Y-m-d',
+                'after_or_equal:'.now()->toDateString()
+            ],
+            'data.attributes.start_time' => ['required'],
+            'data.attributes.email' => ['required']
+        ]);
 
         $appointment = Appointment::create([
             'date' => $request->input('data.attributes.date'),
