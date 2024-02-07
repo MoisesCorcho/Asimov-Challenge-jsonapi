@@ -2,11 +2,11 @@
 
 namespace App\Exceptions;
 
-use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
-use Illuminate\Validation\ValidationException;
 use Throwable;
+use Illuminate\Validation\ValidationException;
 
-use function Laravel\Prompts\error;
+use App\Http\Responses\JsonApiValidationErrorResponse;
+use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 
 class Handler extends ExceptionHandler
 {
@@ -31,42 +31,8 @@ class Handler extends ExceptionHandler
         });
     }
 
-    protected function invalidJson($request, ValidationException $exception)
+    protected function invalidJson($request, ValidationException $exception): JsonApiValidationErrorResponse
     {
-        $title = $exception->getMessage();
-
-        /*
-        Esta es otra manera de hacer el proceso de darle formato a los errores segun json api specification
-
-        $errors = [];
-
-        foreach($exception->errors() as $field => $messages) {
-            $pointer = "/".str_replace('.', '/', $field);
-
-            $errors[] = [
-                'title' => $title,
-                'detail' => $messages[0],
-                'source' => [
-                    'pointer' => $pointer
-                ]
-            ];
-        }*/
-
-        $errors = collect($exception->errors())
-            ->map(function ($messages, $field) use ($title) {
-                return [
-                    'title' => $title,
-                    'detail' => $messages[0],
-                    'source' => [
-                        'pointer' => "/".str_replace('.', '/', $field)
-                    ]
-                ];
-            })->values();
-
-        return response()->json([
-            'errors' => $errors
-        ], 422, [
-            'content-type' => 'application/vnd.api+json' //Cuando damos el formato a los errores mandamos el header y el codigo
-        ]);
+        return new JsonApiValidationErrorResponse($exception);
     }
 }
