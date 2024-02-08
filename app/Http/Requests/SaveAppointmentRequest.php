@@ -2,13 +2,13 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
-use App\Rules\CrossHoursRule;
 use App\Rules\WeekendsRule;
-use App\Rules\TimeIsNotInThePastRule;
+use App\Rules\CrossHoursRule;
 use App\Rules\OfficeTimeRule;
+use App\Rules\TimeIsNotInThePastRule;
+use Illuminate\Foundation\Http\FormRequest;
 
-class StoreAppointmentRequest extends FormRequest
+class SaveAppointmentRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -26,28 +26,28 @@ class StoreAppointmentRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'date'       => [
+            'data.attributes.date' => [
                 'required',
                 'date_format:Y-m-d',
-                'after_or_equal:'.now('America/Bogota')->toDateString(),
+                'after_or_equal:'.now()->toDateString(),
                 new WeekendsRule
             ],
-            'start_time' => [
+            'data.attributes.start_time' => [
                 'required',
                 'date_format:H:i',
                 new TimeIsNotInThePastRule,
-                new CrossHoursRule,
-                new OfficeTimeRule
+                new OfficeTimeRule,
+                new CrossHoursRule
             ],
-            'email'      => [
+            'data.attributes.email' => [
                 'required',
                 'email'
             ]
         ];
     }
 
-    public function messages()
+    public function validated($key = null, $default = null)
     {
-        return [];
+        return parent::validated()['data']['attributes'];
     }
 }

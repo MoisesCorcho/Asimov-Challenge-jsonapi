@@ -17,7 +17,7 @@ class AppointmentCollection extends ResourceCollection
         return [
             'data' => $this->collection,
             'links' => [
-                'self' => route('api.v1.appoinments.index')
+                'self' => route('api.v1.appointments.index')
             ]
         ];
     }

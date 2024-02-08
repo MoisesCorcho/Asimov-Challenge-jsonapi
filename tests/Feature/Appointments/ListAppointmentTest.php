@@ -46,7 +46,7 @@ class ListAppointmentTest extends TestCase
 
         $appointments = Appointment::factory()->count(3)->create();
 
-        $response = $this->getJson(route('api.v1.appoinments.index'));
+        $response = $this->getJson(route('api.v1.appointments.index'));
 
         $response->assertExactJson([
             'data' => [
@@ -88,7 +88,7 @@ class ListAppointmentTest extends TestCase
                 ],
             ],
             'links' => [
-                'self' => route('api.v1.appoinments.index')
+                'self' => route('api.v1.appointments.index')
             ]
         ]);
     }

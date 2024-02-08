@@ -5,21 +5,20 @@ namespace App\Http\Controllers;
 use App\Models\Appointment;
 use App\Rules\WeekendsRule;
 
-use Illuminate\Http\Request;
 use App\Rules\CrossHoursRule;
 use App\Rules\OfficeTimeRule;
+use Illuminate\Http\Response;
 use App\Rules\TimeIsNotInThePastRule;
 use App\Http\Resources\AppointmentResource;
+use App\Http\Requests\SaveAppointmentRequest;
 use App\Http\Resources\AppointmentCollection;
-use App\Http\Requests\StoreAppointmentRequest;
-use App\Http\Requests\UpdateAppointmentRequest;
 
 class AppointmentController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(): AppointmentCollection
     {
         $appointments = Appointment::all();
 
@@ -29,33 +28,9 @@ class AppointmentController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(SaveAppointmentRequest $request): AppointmentResource
     {
-        $request->validate([
-            'data.attributes.date' => [
-                'required',
-                'date_format:Y-m-d',
-                'after_or_equal:'.now()->toDateString(),
-                new WeekendsRule
-            ],
-            'data.attributes.start_time' => [
-                'required',
-                'date_format:H:i',
-                new TimeIsNotInThePastRule,
-                new OfficeTimeRule,
-                new CrossHoursRule
-            ],
-            'data.attributes.email' => [
-                'required',
-                'email'
-            ]
-        ]);
-
-        $appointment = Appointment::create([
-            'date' => $request->input('data.attributes.date'),
-            'start_time' => $request->input('data.attributes.start_time'),
-            'email' => $request->input('data.attributes.email')
-        ]);
+        $appointment = Appointment::create($request->validated());
 
         return AppointmentResource::make($appointment);
     }
@@ -63,7 +38,7 @@ class AppointmentController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Appointment $appointment)
+    public function show(Appointment $appointment): AppointmentResource
     {
         return new AppointmentResource($appointment);
     }
@@ -71,34 +46,9 @@ class AppointmentController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Appointment $appointment)
+    public function update(SaveAppointmentRequest $request, Appointment $appointment): AppointmentResource
     {
-
-        $request->validate([
-            'data.attributes.date' => [
-                'required',
-                'date_format:Y-m-d',
-                'after_or_equal:'.now()->toDateString(),
-                new WeekendsRule
-            ],
-            'data.attributes.start_time' => [
-                'required',
-                'date_format:H:i',
-                new TimeIsNotInThePastRule,
-                new OfficeTimeRule,
-                new CrossHoursRule
-            ],
-            'data.attributes.email' => [
-                'required',
-                'email'
-            ]
-        ]);
-
-        $appointment->update([
-            'date' => $request->input('data.attributes.date'),
-            'start_time' => $request->input('data.attributes.start_time'),
-            'email' => $request->input('data.attributes.email')
-        ]);
+        $appointment->update($request->validated());
 
         return AppointmentResource::make($appointment);
     }
@@ -106,12 +56,10 @@ class AppointmentController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Appointment $appointment)
+    public function destroy(Appointment $appointment): Response
     {
-        Appointment::destroy($appointment->id);
+        $appointment->delete();
 
-        return response()->json([
-            'message' => 'Appointment successfully deleted.'
-        ]);
+        return response()->noContent();
     }
 }
