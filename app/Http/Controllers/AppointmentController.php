@@ -3,12 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\Models\Appointment;
-use Illuminate\Http\Request;
+use App\Rules\WeekendsRule;
 
+use Illuminate\Http\Request;
+use App\Rules\CrossHoursRule;
+use App\Rules\OfficeTimeRule;
+use App\Rules\TimeIsNotInThePastRule;
+use App\Http\Resources\AppointmentResource;
+use App\Http\Resources\AppointmentCollection;
 use App\Http\Requests\StoreAppointmentRequest;
 use App\Http\Requests\UpdateAppointmentRequest;
-use App\Http\Resources\AppointmentCollection;
-use App\Http\Resources\AppointmentResource;
 
 class AppointmentController extends Controller
 {
@@ -31,10 +35,20 @@ class AppointmentController extends Controller
             'data.attributes.date' => [
                 'required',
                 'date_format:Y-m-d',
-                'after_or_equal:'.now()->toDateString()
+                'after_or_equal:'.now()->toDateString(),
+                new WeekendsRule
             ],
-            'data.attributes.start_time' => ['required'],
-            'data.attributes.email' => ['required']
+            'data.attributes.start_time' => [
+                'required',
+                'date_format:H:i',
+                new TimeIsNotInThePastRule,
+                new OfficeTimeRule,
+                new CrossHoursRule
+            ],
+            'data.attributes.email' => [
+                'required',
+                'email'
+            ]
         ]);
 
         $appointment = Appointment::create([
@@ -57,16 +71,36 @@ class AppointmentController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateAppointmentRequest $request, Appointment $appointment)
+    public function update(Request $request, Appointment $appointment)
     {
-        $appointment->date = $request->date;
-        $appointment->start_time = $request->start_time;
-        $appointment->email = $request->email;
-        $appointment->update();
 
-        return response()->json([
-            'message' => 'Appointment successfully updated.'
+        $request->validate([
+            'data.attributes.date' => [
+                'required',
+                'date_format:Y-m-d',
+                'after_or_equal:'.now()->toDateString(),
+                new WeekendsRule
+            ],
+            'data.attributes.start_time' => [
+                'required',
+                'date_format:H:i',
+                new TimeIsNotInThePastRule,
+                new OfficeTimeRule,
+                new CrossHoursRule
+            ],
+            'data.attributes.email' => [
+                'required',
+                'email'
+            ]
         ]);
+
+        $appointment->update([
+            'date' => $request->input('data.attributes.date'),
+            'start_time' => $request->input('data.attributes.start_time'),
+            'email' => $request->input('data.attributes.email')
+        ]);
+
+        return AppointmentResource::make($appointment);
     }
 
     /**

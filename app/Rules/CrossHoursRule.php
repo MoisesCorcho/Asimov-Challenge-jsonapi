@@ -17,7 +17,7 @@ class CrossHoursRule implements ValidationRule
     {
         $appointment = new Appointment;
 
-        if ($appointment->areThereCrossHours($value)) {
+        if ($appointment->areThereCrossHoursPHP($value)) {
             $fail('There are cross hours');
         }
     }
