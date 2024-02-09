@@ -3,12 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Appointment;
-use App\Rules\WeekendsRule;
 
-use App\Rules\CrossHoursRule;
-use App\Rules\OfficeTimeRule;
+use Illuminate\Support\Str;
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use App\Rules\TimeIsNotInThePastRule;
 use App\Http\Resources\AppointmentResource;
 use App\Http\Requests\SaveAppointmentRequest;
 use App\Http\Resources\AppointmentCollection;
@@ -18,11 +16,17 @@ class AppointmentController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(): AppointmentCollection
+    public function index(Request $request): AppointmentCollection
     {
-        $appointments = Appointment::all();
+        $sortField = $request->input('sort');
 
-        return new AppointmentCollection($appointments);
+        $sortDirection = Str::of($sortField)->startsWith('-') ? 'desc' : 'asc';
+
+        $sortField = ltrim($sortField, '-');
+
+        $appointments = Appointment::orderBy($sortField, $sortDirection)->get();
+
+        return AppointmentCollection::make($appointments);
     }
 
     /**
