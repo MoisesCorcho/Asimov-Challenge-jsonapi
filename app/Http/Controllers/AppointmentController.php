@@ -4,8 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Appointment;
 
-use Illuminate\Support\Str;
-use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Http\Resources\AppointmentResource;
 use App\Http\Requests\SaveAppointmentRequest;
@@ -16,27 +14,9 @@ class AppointmentController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request): AppointmentCollection
+    public function index(): AppointmentCollection
     {
-        $appointments = Appointment::query();
-
-        if ($request->filled('sort')) {
-
-            $sortFields = explode(',', $request->input('sort'));
-
-            $allowedSorts = ['date', 'start_time'];
-
-            foreach ($sortFields as $sortField) {
-
-                $sortDirection = Str::of($sortField)->startsWith('-') ? 'desc' : 'asc';
-
-                $sortField = ltrim($sortField, '-');
-
-                abort_unless(in_array($sortField, $allowedSorts), 400);
-
-                $appointments->orderBy($sortField, $sortDirection);
-            }
-        }
+        $appointments = Appointment::allowedSorts(['date', 'start_time']);
 
         return AppointmentCollection::make($appointments->get());
     }
