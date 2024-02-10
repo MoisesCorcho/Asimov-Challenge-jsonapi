@@ -104,5 +104,41 @@ class SortAppointmentsTest extends TestCase
         ]);
     }
 
+    /** @test */
+    public function can_sort_appointments_by_date_and_start_time(): void
+    {
+        Appointment::factory()->create([
+            'date' => '2025-04-02',
+            'start_time' => '14:00'
+        ]);
+
+        Appointment::factory()->create([
+            'date' => '2025-03-02',
+            'start_time' => '09:00'
+        ]);
+
+        Appointment::factory()->create([
+            'date' => '2025-04-02',
+            'start_time' => '11:00'
+        ]);
+
+        $url = route('api.v1.appointments.index', ['sort' => 'date,-start_time']);
+
+        $this->getJson($url)->assertSeeInOrder([
+            '09:00',
+            '14:00',
+            '11:00'
+        ]);
+    }
+
+    /** @test */
+    public function cannot_sort_appointments_by_unknown_fields(): void
+    {
+        Appointment::factory()->count(3)->create();
+
+        $url = route('api.v1.appointments.index', ['sort' => 'unknown']);
+
+        $this->getJson($url)->assertStatus(400);
+    }
 
 }

@@ -18,15 +18,27 @@ class AppointmentController extends Controller
      */
     public function index(Request $request): AppointmentCollection
     {
-        $sortField = $request->input('sort');
+        $appointments = Appointment::query();
 
-        $sortDirection = Str::of($sortField)->startsWith('-') ? 'desc' : 'asc';
+        if ($request->filled('sort')) {
 
-        $sortField = ltrim($sortField, '-');
+            $sortFields = explode(',', $request->input('sort'));
 
-        $appointments = Appointment::orderBy($sortField, $sortDirection)->get();
+            $allowedSorts = ['date', 'start_time'];
 
-        return AppointmentCollection::make($appointments);
+            foreach ($sortFields as $sortField) {
+
+                $sortDirection = Str::of($sortField)->startsWith('-') ? 'desc' : 'asc';
+
+                $sortField = ltrim($sortField, '-');
+
+                abort_unless(in_array($sortField, $allowedSorts), 400);
+
+                $appointments->orderBy($sortField, $sortDirection);
+            }
+        }
+
+        return AppointmentCollection::make($appointments->get());
     }
 
     /**
