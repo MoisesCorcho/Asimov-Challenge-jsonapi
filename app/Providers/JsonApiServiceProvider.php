@@ -2,7 +2,9 @@
 
 namespace App\Providers;
 
-use Illuminate\Support\Str;
+use App\JsonApi\JsonApiQueryBuilder;
+use App\JsonApi\JsonApiTestResponse;
+use Illuminate\Testing\TestResponse;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Database\Eloquent\Builder;
 
@@ -21,25 +23,8 @@ class JsonApiServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        Builder::macro('allowedSorts', function($allowedSorts) {
+        Builder::mixin(new JsonApiQueryBuilder);
 
-            if (request()->filled('sort')) {
-
-                $sortFields = explode(',', request()->input('sort'));
-
-                foreach ($sortFields as $sortField) {
-
-                    $sortDirection = Str::of($sortField)->startsWith('-') ? 'desc' : 'asc';
-
-                    $sortField = ltrim($sortField, '-');
-
-                    abort_unless(in_array($sortField, $allowedSorts), 400);
-
-                    $this->orderBy($sortField, $sortDirection);
-                }
-            }
-
-            return $this;
-        });
+        TestResponse::mixin(new JsonApiTestResponse);
     }
 }
