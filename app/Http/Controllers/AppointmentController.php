@@ -18,7 +18,15 @@ class AppointmentController extends Controller
     {
         $appointments = Appointment::allowedSorts(['date', 'start_time']);
 
-        return AppointmentCollection::make($appointments->get());
+        return AppointmentCollection::make(
+            $appointments->paginate(
+                $perPage = request('page.size', 15),
+                $columns = ['*'],
+                $pageName = 'page[number]',
+                $page = request('page.number', 1)
+            )
+            ->appends(request()->only('sort', 'page.size'))
+        );
     }
 
     /**

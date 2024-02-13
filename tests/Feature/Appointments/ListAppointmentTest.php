@@ -48,7 +48,7 @@ class ListAppointmentTest extends TestCase
 
         $response = $this->getJson(route('api.v1.appointments.index'));
 
-        $response->assertExactJson([
+        $response->assertJson([
             'data' => [
                 [
                     'type' => 'appointments',
