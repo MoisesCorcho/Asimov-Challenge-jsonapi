@@ -19,6 +19,7 @@ class AppointmentController extends Controller
         $appointments = Appointment::query()
             ->allowedFilters(['date', 'year', 'month', 'start_time', 'email'])
             ->allowedSorts(['date', 'start_time'])
+            ->sparseFieldset()
             ->jsonPaginate();
 
         return AppointmentCollection::make( $appointments );

@@ -151,8 +151,6 @@ class PaginateAppointmentsTest extends TestCase
         $prevLink = urldecode($response->json('links.prev'));
         $nextLink = urldecode($response->json('links.next'));
 
-        dd($firstLink);
-
         $this->assertStringContainsString('filter[email]=false', $firstLink);
         $this->assertStringContainsString('filter[email]=false', $lastLink);
         $this->assertStringContainsString('filter[email]=false', $prevLink);

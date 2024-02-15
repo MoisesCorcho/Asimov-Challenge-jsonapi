@@ -51,6 +51,25 @@ class JsonApiQueryBuilder
         };
     }
 
+    public function sparseFieldset(): Closure
+    {
+        return function () {
+            /** @var Builder $this */
+
+            if (request()->isNotFilled('fields')) {
+                return $this;
+            }
+
+            $fields = explode(',', request('fields.appointments'));
+
+            if ( !in_array('id', $fields) ) {
+                $fields[] = 'id';
+            }
+
+            return $this->addSelect($fields);
+        };
+    }
+
     public function jsonPaginate(): Closure
     {
         return function () {
