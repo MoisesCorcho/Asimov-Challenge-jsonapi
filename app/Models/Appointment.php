@@ -6,6 +6,7 @@ use DateTime;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Appointment extends Model
@@ -105,4 +106,15 @@ class Appointment extends Model
 
         return true;
     }
+
+    public function scopeYear(Builder $query, $year)
+    {
+        $query->whereYear('date', $year);
+    }
+
+    public function scopeMonth(Builder $query, $month)
+    {
+        $query->whereMonth('date', $month);
+    }
+
 }

@@ -16,27 +16,12 @@ class AppointmentController extends Controller
      */
     public function index(): AppointmentCollection
     {
-        $appointments = Appointment::query();
+        $appointments = Appointment::query()
+            ->allowedFilters(['date', 'year', 'month', 'start_time', 'email'])
+            ->allowedSorts(['date', 'start_time'])
+            ->jsonPaginate();
 
-        // filter
-
-        $allowedFilters = ['date', 'year', 'month', 'start_time', 'email'];
-
-        foreach (request('filter', []) as $filter => $value) {
-            abort_unless(in_array($filter, $allowedFilters), 400);
-
-            if ($filter === 'year') {
-                $appointments->whereYear('date', $value);
-            } else if ($filter === 'month') {
-                $appointments->whereMonth('date', $value);
-            } else {
-                $appointments->where($filter, 'LIKE', '%'.$value.'%');
-            }
-        }
-
-        $appointments->allowedSorts(['date', 'start_time']);
-
-        return AppointmentCollection::make( $appointments->jsonPaginate() );
+        return AppointmentCollection::make( $appointments );
     }
 
     /**
