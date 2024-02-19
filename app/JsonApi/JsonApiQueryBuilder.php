@@ -8,6 +8,12 @@ use Illuminate\Support\Str;
 class JsonApiQueryBuilder
 {
 
+    /**
+     * Retorna una función de cierre que aplica la clasificación de los registros según los campos permitidos.
+     *
+     * @param array $allowedSorts Los campos de clasificación permitidos (Se recibe en el Closure).
+     * @return Closure Una función de cierre para aplicar la clasificación.
+     */
     public function allowedSorts(): Closure
     {
         return function($allowedSorts) {
@@ -34,6 +40,12 @@ class JsonApiQueryBuilder
         };
     }
 
+    /**
+     * Retorna una función de cierre que aplica la clasificación de los registros según los campos permitidos.
+     *
+     * @param array $allowedSorts Los campos de clasificación permitidos (Se recibe en el Closure).
+     * @return Closure Una función de cierre para aplicar la clasificación.
+     */
     public function allowedFilters(): Closure
     {
         return function($allowedFilters) {
@@ -51,6 +63,11 @@ class JsonApiQueryBuilder
         };
     }
 
+    /**
+     * Retorna una función de cierre que selecciona un subconjunto de campos de la consulta.
+     *
+     * @return Closure Una función de cierre para seleccionar campos específicos.
+     */
     public function sparseFieldset(): Closure
     {
         return function () {
@@ -60,16 +77,29 @@ class JsonApiQueryBuilder
                 return $this;
             }
 
-            $fields = explode(',', request('fields.appointments'));
+            $resourceType = $this->model->getTable();
 
-            if ( !in_array('id', $fields) ) {
-                $fields[] = 'id';
+            if (property_exists($this->model, 'resourceType')) {
+                $resourceType = $this->model->resourceType;
+            }
+
+            $fields = explode(',', request('fields.'.$resourceType));
+
+            $getRouteKeyName = $this->model->getRouteKeyName();
+
+            if ( !in_array($getRouteKeyName, $fields) ) {
+                $fields[] = $getRouteKeyName;
             }
 
             return $this->addSelect($fields);
         };
     }
 
+    /**
+     * Retorna una función de cierre que paginará los resultados de la consulta.
+     *
+     * @return Closure Una función de cierre para paginar los resultados.
+     */
     public function jsonPaginate(): Closure
     {
         return function () {

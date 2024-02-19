@@ -38,8 +38,12 @@ class AppointmentController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Appointment $appointment): AppointmentResource
+    public function show($appointment): AppointmentResource
     {
+        $appointment = Appointment::where('id', $appointment)
+            ->sparseFieldset()
+            ->firstOrFail();
+
         return new AppointmentResource($appointment);
     }
 

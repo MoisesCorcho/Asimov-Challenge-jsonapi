@@ -17,6 +17,12 @@ class Appointment extends Model
 
     protected $guarded = [];
 
+    /**
+     * Propiedad creada para la funcion sparseFielset dentro de la clase JsonApiQueryBuilder, la cual es usada
+     * para un mixin, para añadir funcionalidad al modelo.
+     */
+    // public $resourceType = 'appointments';
+
     function areThereCrossHours(string $time)
     {
         $date = request()->input('data.attributes.date');
