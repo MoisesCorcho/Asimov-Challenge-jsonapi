@@ -7,14 +7,15 @@ use App\Models\Appointment;
 use Illuminate\Http\Response;
 use App\Http\Resources\AppointmentResource;
 use App\Http\Requests\SaveAppointmentRequest;
-use App\Http\Resources\AppointmentCollection;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Http\Resources\Json\JsonResource;
 
 class AppointmentController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index(): AppointmentCollection
+    public function index(): AnonymousResourceCollection
     {
         $appointments = Appointment::query()
             ->allowedFilters(['date', 'year', 'month', 'start_time', 'email'])
@@ -22,7 +23,7 @@ class AppointmentController extends Controller
             ->sparseFieldset()
             ->jsonPaginate();
 
-        return AppointmentCollection::make( $appointments );
+        return AppointmentResource::collection( $appointments );
     }
 
     /**
@@ -38,7 +39,7 @@ class AppointmentController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show($appointment): AppointmentResource
+    public function show($appointment): JsonResource
     {
         $appointment = Appointment::where('id', $appointment)
             ->sparseFieldset()

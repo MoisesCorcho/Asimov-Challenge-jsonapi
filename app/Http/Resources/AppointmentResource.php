@@ -2,49 +2,26 @@
 
 namespace App\Http\Resources;
 
-use Illuminate\Http\Request;
+use App\JsonApi\Traits\JsonApiResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class AppointmentResource extends JsonResource
 {
+    use JsonApiResource;
+
     /**
-     * Transform the resource into an array.
+     * Se especifican en un arreglo los atributos del recurso
+     * que queremos convertir en JSON
      *
-     * @return array<string, mixed>
+     * @return array
      */
-    public function toArray(Request $request): array
+    public function toJsonApi(): array
     {
         return [
-            'type' => 'appointments',
-            'id' => (string) $this->getRouteKey(),
-            'attributes' => array_filter([
-                'date' => $this->date,
-                'start_time' => $this->start_time,
-                'email' => $this->email
-            ], function($value) {
-
-                if (request()->isNotFilled('fields')) {
-                    return true;
-                }
-
-                $fields = explode(',', request('fields.appointments'));
-
-                if ($value === $this->getRouteKey()) {
-                    return in_array('id', $fields);
-                }
-
-                return $value;
-            }),
-            'links' => [
-                'self' => route('api.v1.appointments.show', $this)
-            ]
+            'date' => $this->date,
+            'start_time' => $this->start_time,
+            'email' => $this->email
         ];
     }
 
-    public function toResponse($request)
-    {
-        return parent::toResponse($request)->withHeaders([
-            'Location' => route('api.v1.appointments.show', $this)
-        ]);
-    }
 }
