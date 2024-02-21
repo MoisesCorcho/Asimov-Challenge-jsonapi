@@ -1,7 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\AppointmentController;
+use App\Http\Controllers\Api\CategoryController;
+use App\Http\Controllers\Api\AppointmentController;
 
 // Route::get('appointments',                  [AppointmentController::class, 'index'])->name('api.v1.appointments.index');
 // Route::get('appointments/{appointment}',    [AppointmentController::class, 'show'])->name('api.v1.appointments.show');
@@ -9,5 +10,8 @@ use App\Http\Controllers\AppointmentController;
 // Route::patch('appointments/{appointment}',  [AppointmentController::class, 'update'])->name('api.v1.appointments.update');
 // Route::delete('appointments/{appointment}', [AppointmentController::class, 'destroy'])->name('api.v1.appointments.destroy');
 
-Route::apiResource('appointments', AppointmentController::class)
-    ->names('api.v1.appointments');
+
+Route::apiResource('appointments', AppointmentController::class);
+
+Route::apiResource('categories', CategoryController::class)
+    ->only('index', 'show');

@@ -17,6 +17,11 @@ class Appointment extends Model
 
     protected $guarded = [];
 
+    public function category()
+    {
+        return $this->belongsTo(\App\Models\Category::class);
+    }
+
     /**
      * Propiedad creada para la funcion sparseFielset dentro de la clase JsonApiQueryBuilder, la cual es usada
      * para un mixin, para añadir funcionalidad al modelo.

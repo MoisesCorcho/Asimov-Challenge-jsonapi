@@ -10,6 +10,20 @@ use PHPUnit\Framework\ExpectationFailedException;
 
 class JsonApiTestResponse
 {
+    /**
+     * Macro para verificar si se devuelven errores de validación en formato JSON:API.
+     *
+     * Este método macro se utiliza para verificar si se devuelven errores de validación
+     * en un formato específico JSON:API. Verifica si los errores de validación para un
+     * atributo específico tienen el formato correcto y si la respuesta tiene el encabezado
+     * content-type establecido en application/vnd.api+json. Además, verifica si el código
+     * de estado de la respuesta es 422 (Unprocessable Entity).
+     *
+     * @param string $attribute // El atributo para el cual se están verificando los errores
+     * de validación en formato JSON:API. Parametro del Closure interno.
+     *
+     * @return Closure
+     */
     public function assertJsonApiValidationErrors(): Closure
     {
         return function ($attribute) {
@@ -51,12 +65,28 @@ class JsonApiTestResponse
         };
     }
 
+    /**
+     * Macro para verificar si se devuelve un recurso en formato JSON:API.
+     *
+     * Este método macro se utiliza para verificar si se devuelve un recurso en un formato
+     * específico JSON:API. Verifica si la respuesta contiene un objeto de datos con el tipo
+     * correcto, el ID correcto, los atributos esperados y los enlaces de self correctos.
+     * También verifica el encabezado Location de la respuesta.
+     *
+     * @param \Illuminate\Database\Eloquent\Model $model // El modelo del recurso que se
+     * espera recibir en la respuesta JSON:API. Parametro del Closure interno.
+     *
+     * @param array $attributes // Los atributos que se esperan para el recurso en la
+     * respuesta JSON:API. Parametro del Closure interno.
+     *
+     * @return Closure
+     */
     public function assertJsonApiResource(): Closure
     {
         return function ($model, $attributes) {
 
             /** @var TestResponse $this */
-            $this->assertJson([
+            return $this->assertJson([
                 'data' => [
                     'type' => $model->getResourceType(),
                     'id' => (string) $model->getRouteKey(),
@@ -72,6 +102,23 @@ class JsonApiTestResponse
         };
     }
 
+    /**
+     * Macro para verificar si se devuelve una colección de recursos en formato JSON:API.
+     *
+     * Este método macro se utiliza para verificar si se devuelve una colección de recursos
+     * en un formato específico JSON:API. Verifica si la respuesta contiene una estructura
+     * de datos que representa una colección de recursos, y verifica cada recurso individual
+     * dentro de la colección para asegurarse de que tenga el formato correcto
+     * de tipo, ID y enlaces de self.
+     *
+     * @param \Illuminate\Database\Eloquent\Collection $models // La colección de modelos de
+     * recursos que se espera recibir en la respuesta JSON:API. Parametro del Closure interno.
+     *
+     * @param array $attributesKeys // Las claves de los atributos que se esperan para cada
+     * recurso en la respuesta JSON:API. Parametro del Closure interno.
+     *
+     * @return Closure
+     */
     public function assertJsonApiResourceCollection(): Closure
     {
         return function ($models, $attributesKeys) {
@@ -94,6 +141,8 @@ class JsonApiTestResponse
                     ]
                 ]);
             }
+
+            return $this;
         };
     }
 }

@@ -9,10 +9,12 @@ class JsonApiQueryBuilder
 {
 
     /**
-     * Retorna una función de cierre que aplica la clasificación de los registros según los campos permitidos.
+     * Esta función devuelve una función de cierre que se encarga de aplicar la
+     * clasificación (ordenamiento) a una consulta de la base de datos. Toma un array
+     * $allowedSorts como parámetro, que contiene los campos permitidos para ordenar.
      *
      * @param array $allowedSorts Los campos de clasificación permitidos (Se recibe en el Closure).
-     * @return Closure Una función de cierre para aplicar la clasificación.
+     * @return Closure
      */
     public function allowedSorts(): Closure
     {
@@ -41,10 +43,12 @@ class JsonApiQueryBuilder
     }
 
     /**
-     * Retorna una función de cierre que aplica la clasificación de los registros según los campos permitidos.
+     * Esta función devuelve una función de cierre que se encarga de aplicar filtros a una
+     * consulta de la base de datos. Toma un array $allowedFilters como parámetro, que
+     * contiene los campos permitidos para filtrar.
      *
-     * @param array $allowedSorts Los campos de clasificación permitidos (Se recibe en el Closure).
-     * @return Closure Una función de cierre para aplicar la clasificación.
+     * @param array $allowedFilters Los campos de filtro permitidos (Se recibe en el Closure).
+     * @return Closure
      */
     public function allowedFilters(): Closure
     {

@@ -1,14 +1,15 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
 use App\Models\Appointment;
 
 use Illuminate\Http\Response;
+use App\Http\Controllers\Controller;
 use App\Http\Resources\AppointmentResource;
 use App\Http\Requests\SaveAppointmentRequest;
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class AppointmentController extends Controller
 {
