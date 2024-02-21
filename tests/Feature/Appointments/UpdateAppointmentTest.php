@@ -32,26 +32,12 @@ class UpdateAppointmentTest extends TestCase
 
         $response->assertOk();
 
-        $response->assertHeader(
-            'Location',
-            route('api.v1.appointments.show', $appointment)
-        );
-
         $appointment2 = Appointment::first();
 
-        $response->assertExactJson([
-            'data' => [
-                'type' => 'appointments',
-                'id' => (string) $appointment2->getRouteKey(),
-                'attributes' => [
-                    'date' => $appointment2->date,
-                    'start_time' => $appointment2->start_time,
-                    'email' => $appointment2->email
-                ],
-                'links' => [
-                    'self' => route('api.v1.appointments.show', $appointment2->getRouteKey())
-                ]
-            ]
+        $response->assertJsonApiResource($appointment2, [
+            'date' => $appointment2->date,
+            'start_time' => $appointment2->start_time,
+            'email' => $appointment2->email
         ]);
     }
 

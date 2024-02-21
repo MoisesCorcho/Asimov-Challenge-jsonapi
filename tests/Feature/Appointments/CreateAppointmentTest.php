@@ -31,25 +31,12 @@ class CreateAppointmentTest extends TestCase
 
         $appointment = Appointment::first();
 
-        $response->assertHeader(
-            'Location',
-            route('api.v1.appointments.show', $appointment)
-        );
-
-        $response->assertExactJson([
-            'data' => [
-                'type' => 'appointments',
-                'id' => (string) $appointment->getRouteKey(),
-                'attributes' => [
-                    'date' => $appointment->date,
-                    'start_time' => substr($appointment->start_time, 0, 5),
-                    'email' => $appointment->email
-                ],
-                'links' => [
-                    'self' => route('api.v1.appointments.show', $appointment->getRouteKey())
-                ]
-            ]
+        $response->assertJsonApiResource($appointment, [
+            'date' => $appointment->date,
+            'start_time' => substr($appointment->start_time, 0, 5),
+            'email' => $appointment->email
         ]);
+
     }
 
     /** @test */
