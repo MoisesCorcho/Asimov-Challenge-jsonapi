@@ -77,4 +77,29 @@ class Document extends Collection
         // Retorna la instancia actual para permitir el encadenamiento de métodos.
         return $this;
     }
+
+    /**
+     * Establece las relaciones documento JSON:API.
+     *
+     * @param array $relationships las relaciones.
+     * @return Document La instancia actual de Document.
+     */
+    public function relationships(array $relationships): Document
+    {
+        /**
+         * Recorre las diferentes relaciones que se pueden mandar
+         * y las establece en el array de elementos del documento.
+         */
+        foreach ($relationships as $key => $relationship) {
+            $this->items['data']['relationships'][$key] = [
+                'data' => [
+                    'type' => $relationship->getResourceType(),
+                    'id'   => (string) $relationship->getRouteKey()
+                ]
+            ];
+        }
+
+        // Retorna la instancia actual para permitir el encadenamiento de métodos.
+        return $this;
+    }
 }

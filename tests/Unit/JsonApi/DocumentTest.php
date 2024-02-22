@@ -2,20 +2,30 @@
 
 namespace Tests\Unit\JsonApi;
 
+use Mockery;
+use Tests\TestCase;
 use App\JsonApi\Document;
-use PHPUnit\Framework\TestCase;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class DocumentTest extends TestCase
 {
+    use RefreshDatabase;
+
     /** @test */
     public function can_create_json_api_documents()
     {
+        $category = Mockery::mock('category', function ($mock) {
+            $mock->shouldReceive('getResourceType')->andReturn('categories');
+            $mock->shouldReceive('getRouteKey')->andReturn('1');
+        });
+
         $document = Document::type('appointments')
             ->id('1')
             ->attributes([
                 'date' => '2025-01-01'
-            ])
-            ->toArray();
+            ])->relationships([
+                'category' => $category
+            ])->toArray();
 
         $expected = [
             'data' => [
@@ -23,6 +33,14 @@ class DocumentTest extends TestCase
                 'id' => '1',
                 'attributes' => [
                     'date' => '2025-01-01'
+                ],
+                'relationships' => [
+                    'category' => [
+                        'data' => [
+                            'type' => 'categories',
+                            'id' => '1'
+                        ]
+                    ]
                 ]
             ]
         ];
