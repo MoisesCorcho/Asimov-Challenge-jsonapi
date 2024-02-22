@@ -2,8 +2,9 @@
 
 namespace Tests\Feature\Appointments;
 
-use App\Models\Appointment;
 use Tests\TestCase;
+use App\JsonApi\Document;
+use App\Models\Appointment;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class CreateAppointmentTest extends TestCase
@@ -16,16 +17,15 @@ class CreateAppointmentTest extends TestCase
     {
         $this->withoutExceptionHandling();
 
-        $response = $this->postJson(route('api.v1.appointments.store'), [
-            'data' => [
-                'type' => 'appointments',
-                'attributes' => [
+        $response = $this->postJson(route('api.v1.appointments.store'),
+            Document::type('appointments')
+                ->attributes([
                     'date' => '2025-11-17',
                     'start_time' => '11:00',
                     'email' => 'falseemail@gmail.com'
-                ],
-            ]
-        ]);
+                ])
+                ->toArray()
+        );
 
         $response->assertCreated();
 

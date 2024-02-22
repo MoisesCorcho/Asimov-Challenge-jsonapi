@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature;
+namespace Tests\Feature\Appointments;
 
 use App\Models\Appointment;
 use Illuminate\Foundation\Testing\RefreshDatabase;

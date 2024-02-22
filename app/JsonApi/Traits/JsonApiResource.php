@@ -2,29 +2,38 @@
 
 namespace App\JsonApi\Traits;
 
+use App\JsonApi\Document;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
+/**
+ * Trait para los Laravel Resources, en donde se hacen ciertas modificaciones para
+ * que sea mas facil ajustar las respuestas a la especificacion JSON:API
+ */
 Trait JsonApiResource
 {
     abstract public function toJsonApi(): array;
 
     /**
      * Transform the resource into an array.
+     * Se usa el metodo get('data') para que no hayan errores tales
+     * como que en algunas ocasiones se duplique la llave 'data',
+     * la que se agrega por parte de la clase Document creada por
+     * nosotros y la que se agrega automaticamente en
+     * los LaravelResources
      *
      * @return array
      */
     public function toArray(Request $request): array
     {
-        return [
-            'type' => $this->getResourceType(),
-            'id' => (string) $this->getRouteKey(),
-            'attributes' => $this->filterAttributes( $this->toJsonApi() ),
-            'links' => [
+        return Document::type($this->getResourceType())
+            ->id($this->getRouteKey())
+            ->attributes($this->filterAttributes( $this->toJsonApi() ))
+            ->links([
                 'self' => route('api.v1.'.$this->getResourceType().'.show', $this)
-            ]
-        ];
+            ])
+            ->get('data');
     }
 
     /**
@@ -75,6 +84,14 @@ Trait JsonApiResource
         });
     }
 
+    /**
+     * Se reescribe el metodo collection para añadirle el atributo 'links'
+     * a la respues, lo cual, nos ahorra el tener que crear un archivo
+     * LaravelCollection solo para añadir dicho atributo.
+     *
+     * @param [type] $resource
+     * @return AnonymousResourceCollection
+     */
     public static function collection($resource): AnonymousResourceCollection
     {
         $collection = parent::collection($resource);

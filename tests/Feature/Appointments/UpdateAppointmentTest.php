@@ -3,6 +3,7 @@
 namespace Tests\Feature\Appointments;
 
 use Tests\TestCase;
+use App\JsonApi\Document;
 use App\Models\Appointment;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -18,17 +19,16 @@ class UpdateAppointmentTest extends TestCase
 
         $appointment = Appointment::factory()->create();
 
-        $response = $this->patchJson(route('api.v1.appointments.update', $appointment), [
-            'data' => [
-                'type' => 'appointments',
-                'id' => '1',
-                'attributes' => [
+        $response = $this->patchJson(route('api.v1.appointments.update', $appointment),
+            Document::type('appointments')
+                ->id(1)
+                ->attributes([
                     'date' => '2026-01-01',
                     'start_time' => '10:00',
                     'email' => 'updatedupdatedfalseemail@gmail.com'
-                ],
-            ]
-        ]);
+                ])
+                ->toArray()
+        );
 
         $response->assertOk();
 
