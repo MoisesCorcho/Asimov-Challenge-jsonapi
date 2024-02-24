@@ -42,12 +42,38 @@ class SaveAppointmentRequest extends FormRequest
             'data.attributes.email' => [
                 'required',
                 'email'
-            ]
+            ],
+            'data.relationships' => []
         ];
     }
 
+    /**
+     * Se sobreescribe el metodo validated() para que cuando se utilice
+     * en el controlador solo se tengan los atributos que se necesitan
+     * ya que al usar la especificacion JSON:API los atributos se
+     * encuentran dentro ['data']['attributes']. De la misma forma
+     * se añade al arreglo 'validated' los atributos referentes
+     * a las relaciones.
+     *
+     * @return void
+     */
     public function validated($key = null, $default = null)
     {
-        return parent::validated()['data']['attributes'];
+        // Obtenemos la llave data de la peticion recibida.
+        $data = parent::validated()['data'];
+        // Obtenemos la llave attributes de data
+        $attributes = $data['attributes'];
+
+        /** Vamos a añadir el atributo de llave foranea 'category_id' solo en caso
+         * de que esta haya sido mandada en la peticion.*/
+        if (isset($data['relationships'])) {
+
+            $relationships = $data['relationships'];
+
+            // Se añade al arreglo que se va a retornar la clave de la relacion.
+            $attributes['category_id'] = $relationships['category']['data']['id'];
+        }
+
+        return $attributes;
     }
 }

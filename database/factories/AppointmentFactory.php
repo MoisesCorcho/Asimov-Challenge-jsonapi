@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Category;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -20,6 +21,7 @@ class AppointmentFactory extends Factory
             'date' => $this->faker->date('Y-m-d'),
             'start_time' => $this->faker->time('H:i:s'),
             'email' => $this->faker->unique()->safeEmail,
+            'category_id' => Category::factory()
         ];
     }
 }

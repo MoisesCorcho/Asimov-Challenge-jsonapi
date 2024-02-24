@@ -5,6 +5,7 @@ namespace Tests\Feature\Appointments;
 use Tests\TestCase;
 use App\JsonApi\Document;
 use App\Models\Appointment;
+use App\Models\Category;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class CreateAppointmentTest extends TestCase
@@ -17,14 +18,17 @@ class CreateAppointmentTest extends TestCase
     {
         $this->withoutExceptionHandling();
 
+        $category = Category::factory()->create();
+
         $response = $this->postJson(route('api.v1.appointments.store'),
             Document::type('appointments')
                 ->attributes([
                     'date' => '2025-11-17',
                     'start_time' => '11:00',
                     'email' => 'falseemail@gmail.com'
-                ])
-                ->toArray()
+                ])->relationships([
+                    'category' => $category
+                ])->toArray()
         );
 
         $response->assertCreated();
@@ -204,10 +208,14 @@ class CreateAppointmentTest extends TestCase
     /** @test */
     public function appointments_may_only_last_an_hour()
     {
+
+        $category = Category::factory()->create();
+
         Appointment::create([
             'date' => '2026-01-01',
             'start_time' => '12:00',
-            'email' => 'falseemail@gmail.com'
+            'email' => 'falseemail@gmail.com',
+            'category_id' => $category->getRouteKey()
         ]);
 
         $response = $this->postJson(route('api.v1.appointments.store'), [

@@ -3,6 +3,7 @@
 namespace Tests\Feature\Appointments;
 
 use Tests\TestCase;
+use App\Models\Category;
 use App\JsonApi\Document;
 use App\Models\Appointment;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -234,10 +235,13 @@ class UpdateAppointmentTest extends TestCase
     /** @test */
     public function appointments_may_only_last_an_hour()
     {
+        $category = Category::factory()->create();
+
         $appointment = Appointment::create([
             'date' => '2026-01-01',
             'start_time' => '12:00',
-            'email' => 'updatedfalseemail@gmail.com'
+            'email' => 'updatedfalseemail@gmail.com',
+            'category_id' => $category->getRouteKey()
         ]);
 
         $response = $this->patchJson(route('api.v1.appointments.update', $appointment), [
