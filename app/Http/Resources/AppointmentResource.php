@@ -11,7 +11,7 @@ class AppointmentResource extends JsonResource
 
     /**
      * Se especifican en un arreglo los atributos del recurso
-     * que queremos convertir en JSON
+     * que queremos convertir en JSON.
      *
      * @return array
      */
@@ -22,6 +22,17 @@ class AppointmentResource extends JsonResource
             'start_time' => $this->start_time,
             'email' => $this->email
         ];
+    }
+
+    /**
+     * Se especifican las relaciones de los links que queremos
+     * generar.
+     *
+     * @return array
+     */
+    public function getRelationshipLinks(): array
+    {
+        return ['category'];
     }
 
 }

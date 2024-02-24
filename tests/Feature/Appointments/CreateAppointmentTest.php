@@ -26,7 +26,7 @@ class CreateAppointmentTest extends TestCase
                     'date' => '2025-11-17',
                     'start_time' => '11:00',
                     'email' => 'falseemail@gmail.com'
-                ])->relationships([
+                ])->relationshipsData([
                     'category' => $category
                 ])->toArray()
         );
@@ -314,7 +314,7 @@ class CreateAppointmentTest extends TestCase
                     'date' => '2025-11-17',
                     'start_time' => '11:00',
                     'email' => 'falseemail@gmail.com'
-                ])->relationships([
+                ])->relationshipsData([
                     'category' => Category::factory()->make()
                 ])->toArray()
         );

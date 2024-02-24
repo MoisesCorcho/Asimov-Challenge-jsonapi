@@ -23,7 +23,7 @@ class DocumentTest extends TestCase
             ->id('1')
             ->attributes([
                 'date' => '2025-01-01'
-            ])->relationships([
+            ])->relationshipsData([
                 'category' => $category
             ])->toArray();
 

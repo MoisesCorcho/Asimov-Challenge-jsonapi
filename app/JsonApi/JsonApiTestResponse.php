@@ -156,4 +156,38 @@ class JsonApiTestResponse
             return $this;
         };
     }
+
+    /**
+     * Macro para verificar si se estan retornando los relationships links
+     * en las respuestas.
+     *
+     * @param Model $model
+     * @param array $relationships
+     *
+     * @return Closure
+     */
+    public function assertJsonApiRelationshipLinks(): Closure
+    {
+        return function ($model, $relationships) {
+            /** @var TestResponse $this */
+
+            foreach ($relationships as $relationship) {
+                $this->assertJson([
+                    'data' => [
+                        'relationships' => [
+                            'category' => [
+                                'links' => [
+                                    'self' => route("api.v1.{$model->getResourceType()}.relationships.{$relationship}", $model),
+                                    'related' => route("api.v1.{$model->getResourceType()}.{$relationship}", $model)
+                                ]
+                            ]
+                        ]
+                    ]
+                ]);
+            }
+
+            return $this;
+        };
+    }
+
 }

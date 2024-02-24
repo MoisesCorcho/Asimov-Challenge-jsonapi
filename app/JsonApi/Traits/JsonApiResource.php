@@ -30,10 +30,23 @@ Trait JsonApiResource
         return Document::type($this->getResourceType())
             ->id($this->getRouteKey())
             ->attributes($this->filterAttributes( $this->toJsonApi() ))
+            ->relationshipLinks( $this->getRelationshipLinks() )
             ->links([
                 'self' => route('api.v1.'.$this->getResourceType().'.show', $this)
             ])
             ->get('data');
+    }
+
+    /**
+     * Establecemos este metodo aqui en el Trait para hacer la inclusion
+     * de este metodo opcional en la creacion del documento JSON:API.
+     * Para darle valores lo definimos en LaravelResource que se necesite.
+     *
+     * @return array
+     */
+    public function getRelationshipLinks(): array
+    {
+        return [];
     }
 
     /**

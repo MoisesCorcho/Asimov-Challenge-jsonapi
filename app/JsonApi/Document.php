@@ -84,18 +84,45 @@ class Document extends Collection
      * @param array $relationships las relaciones.
      * @return Document La instancia actual de Document.
      */
-    public function relationships(array $relationships): Document
+    public function relationshipsData(array $relationships): Document
     {
         /**
          * Recorre las diferentes relaciones que se pueden mandar
          * y las establece en el array de elementos del documento.
          */
         foreach ($relationships as $key => $relationship) {
-            $this->items['data']['relationships'][$key] = [
-                'data' => [
-                    'type' => $relationship->getResourceType(),
-                    'id'   => (string) $relationship->getRouteKey()
-                ]
+            $this->items['data']['relationships'][$key]['data'] = [
+                'type' => $relationship->getResourceType(),
+                'id'   => (string) $relationship->getRouteKey()
+            ];
+        }
+
+        // Retorna la instancia actual para permitir el encadenamiento de métodos.
+        return $this;
+    }
+
+    /**
+     * Establece los links de las relaciones.
+     *
+     * @param array $relationships
+     * @return Document
+     */
+    public function relationshipLinks(array $relationships): Document
+    {
+        /**
+         * Recorre las diferentes relaciones que se pueden mandar
+         * y las establece en el array de elementos del documento.
+         */
+        foreach ($relationships as $key) {
+            $this->items['data']['relationships'][$key]['links'] = [
+                'self' => route(
+                    "api.v1.{$this->items['data']['type']}.relationships.{$key}",
+                    $this->items['data']['id']
+                ),
+                'related' => route(
+                    "api.v1.{$this->items['data']['type']}.{$key}",
+                    $this->items['data']['id']
+                )
             ];
         }
 

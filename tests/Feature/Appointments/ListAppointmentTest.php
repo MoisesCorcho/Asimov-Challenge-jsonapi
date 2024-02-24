@@ -4,7 +4,6 @@ namespace Tests\Feature\Appointments;
 
 use App\Models\Appointment;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 class ListAppointmentTest extends TestCase
@@ -15,19 +14,17 @@ class ListAppointmentTest extends TestCase
     /** @test */
     public function can_fetch_a_single_appointment(): void
     {
-
         $this->withoutExceptionHandling();
 
         $appointment = Appointment::factory()->create();
 
-        // $response = $this->getJson('api/v1/appointments/'.$appointment->getRouteKey());
         $response = $this->getJson(route('api.v1.appointments.show', $appointment));
 
         $response->assertJsonApiResource($appointment, [
             'date' => $appointment->date,
             'start_time' => $appointment->start_time,
             'email' => $appointment->email
-        ])->dump();
+        ])->assertJsonApiRelationshipLinks($appointment, ['category']);
     }
 
     /** @test */

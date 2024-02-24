@@ -15,3 +15,9 @@ Route::apiResource('appointments', AppointmentController::class);
 
 Route::apiResource('categories', CategoryController::class)
     ->only('index', 'show');
+
+Route::get('appointments/{appointment}/relationships/category', fn() => 'TODO')
+    ->name('appointments.relationships.category');
+
+Route::get('appointments/{appointment}/category', fn() => 'TODO')
+    ->name('appointments.category');
