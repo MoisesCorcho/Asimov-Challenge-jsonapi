@@ -8,6 +8,13 @@ use Illuminate\Testing\TestResponse;
 use PHPUnit\Framework\Assert as PHPUnit;
 use PHPUnit\Framework\ExpectationFailedException;
 
+/**
+ * Clase llamada a traves del metodo mixin de TestResponse
+ * cada una de estas funciones es un Macro, la cual es una
+ * funcion extendida de la propia clase TestResponse
+ * es decir, que se puede usar como una funcion mas de la
+ * clase
+ */
 class JsonApiTestResponse
 {
     /**
@@ -29,9 +36,13 @@ class JsonApiTestResponse
         return function ($attribute) {
             /** @var TestResponse $this  */
 
-            $pointer = Str::of($attribute)->startsWith('data')
-                ? "/".str_replace('.', '/', $attribute)
-                : "/data/attributes/{$attribute}";
+            $pointer = "/data/attributes/{$attribute}";
+
+            if ( Str::of($attribute)->startsWith('data') ) {
+                $pointer = "/".str_replace('.', '/', $attribute);
+            } elseif (Str::of($attribute)->startsWith('relationships')) {
+                $pointer = "/data/".str_replace('.', '/', $attribute)."/data/id";
+            }
 
             try {
                 $this->assertJsonFragment([

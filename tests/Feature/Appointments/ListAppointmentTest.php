@@ -27,7 +27,7 @@ class ListAppointmentTest extends TestCase
             'date' => $appointment->date,
             'start_time' => $appointment->start_time,
             'email' => $appointment->email
-        ]);
+        ])->dump();
     }
 
     /** @test */

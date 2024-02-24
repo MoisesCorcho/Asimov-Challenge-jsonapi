@@ -287,4 +287,38 @@ class CreateAppointmentTest extends TestCase
 
         $response->assertJsonApiValidationErrors('email');
     }
+
+    /** @test */
+    public function category_relationship_is_required()
+    {
+        $response = $this->postJson(route('api.v1.appointments.store'), [
+            'data' => [
+                'type' => 'appointments',
+                'attributes' => [
+                    'date' => '2026-01-01',
+                    'start_time' => '11:00',
+                    'email' => 'falseemail@gmail.com'
+                ],
+            ]
+        ]);
+
+        $response->assertJsonApiValidationErrors('relationships.category');
+    }
+
+    /** @test */
+    public function category_must_exist_in_database()
+    {
+        $response = $this->postJson(route('api.v1.appointments.store'),
+            Document::type('appointments')
+                ->attributes([
+                    'date' => '2025-11-17',
+                    'start_time' => '11:00',
+                    'email' => 'falseemail@gmail.com'
+                ])->relationships([
+                    'category' => Category::factory()->make()
+                ])->toArray()
+        );
+
+        $response->assertJsonApiValidationErrors('data.relationships.category.data.id');
+    }
 }

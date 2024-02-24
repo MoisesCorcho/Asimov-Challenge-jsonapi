@@ -5,6 +5,7 @@ namespace App\Http\Requests;
 use App\Rules\WeekendsRule;
 use App\Rules\CrossHoursRule;
 use App\Rules\OfficeTimeRule;
+use Illuminate\Validation\Rule;
 use App\Rules\TimeIsNotInThePastRule;
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -43,7 +44,10 @@ class SaveAppointmentRequest extends FormRequest
                 'required',
                 'email'
             ],
-            'data.relationships' => []
+            'data.relationships.category.data.id' => [
+                Rule::requiredIf( ! $this->route('appointment') ),
+                Rule::exists('categories', 'id')
+            ]
         ];
     }
 

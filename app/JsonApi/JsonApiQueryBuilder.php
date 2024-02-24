@@ -5,6 +5,13 @@ namespace App\JsonApi;
 use Closure;
 use Illuminate\Support\Str;
 
+/**
+ * Clase llamada a traves del metodo mixin de Builder
+ * cada una de estas funciones es un Macro, la cual es una
+ * funcion extendida de la propia clase Builder
+ * es decir, que se puede usar como una funcion mas de la
+ * clase
+ */
 class JsonApiQueryBuilder
 {
 
