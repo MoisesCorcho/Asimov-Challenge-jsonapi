@@ -16,7 +16,7 @@ class JsonApiQueryBuilder
 {
 
     /**
-     * Esta función devuelve una función de cierre que se encarga de aplicar la
+     * Esta función (Macro) devuelve una función de cierre que se encarga de aplicar la
      * clasificación (ordenamiento) a una consulta de la base de datos. Toma un array
      * $allowedSorts como parámetro, que contiene los campos permitidos para ordenar.
      *
@@ -50,7 +50,7 @@ class JsonApiQueryBuilder
     }
 
     /**
-     * Esta función devuelve una función de cierre que se encarga de aplicar filtros a una
+     * Esta función (Macro) devuelve una función de cierre que se encarga de aplicar filtros a una
      * consulta de la base de datos. Toma un array $allowedFilters como parámetro, que
      * contiene los campos permitidos para filtrar.
      *
@@ -75,7 +75,40 @@ class JsonApiQueryBuilder
     }
 
     /**
-     * Retorna una función de cierre que selecciona un subconjunto de campos de la consulta.
+     * Esta funcion (Macro) hace la precarga de relaciones en caso de que
+     * sea un include (relacion) permitido.
+     *
+     * @param array $allowedIncludes Los includes permitidos. (Se recibe en el Closure).
+     *
+     * @return Closure
+     */
+    public function allowedIncludes(): Closure
+    {
+        return function ($allowedIncludes) {
+            /** @var Builder $this */
+
+            if (request()->isNotFilled('include')) {
+                return $this;
+            }
+
+            // Convertimos el String recibido en un array.
+            $includes = explode(',', request()->input('include'));
+
+            // Se recorre el array de includes.
+            foreach ($includes as $include) {
+                abort_unless(in_array($include, $allowedIncludes) ,400);
+
+                // Añadimos el include para la precarga.
+                $this->with($include);
+            }
+
+            return $this;
+        };
+    }
+
+    /**
+     * Esta funcion (Macro) Retorna una función de cierre que selecciona
+     * un subconjunto de campos de la consulta.
      *
      * @return Closure Una función de cierre para seleccionar campos específicos.
      */
@@ -101,7 +134,8 @@ class JsonApiQueryBuilder
     }
 
     /**
-     * Retorna una función de cierre que paginará los resultados de la consulta.
+     * Esta funcion (Macro) Retorna una función de cierre que paginará
+     * los resultados de la consulta.
      *
      * @return Closure Una función de cierre para paginar los resultados.
      */
@@ -120,7 +154,8 @@ class JsonApiQueryBuilder
     }
 
     /**
-     * Obtiene el tipo de recurso ya sea del nombre de la tabla en la base de datos o en la propiedad
+     * Esta funcion (Macro) Obtiene el tipo de recurso ya sea del nombre
+     * de la tabla en la base de datos o en la propiedad
      * resourceType en el modelo creada por nosotros.
      *
      * @return Closure

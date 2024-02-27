@@ -63,4 +63,25 @@ class IncludeCategoryTest extends TestCase
             ]
         ]);
     }
+
+    /** @test */
+    public function cannot_include_unknown_relationships(): void
+    {
+        $appointment = Appointment::factory()->create();
+
+        // appointments/1?include=unknown
+        $url = route('api.v1.appointments.show', [
+            'appointment' => $appointment,
+            'include' => 'unknown,unknown2'
+        ]);
+
+        $this->getJson($url)->assertStatus(400);
+
+        // appointments?include=unknown
+        $url = route('api.v1.appointments.index', [
+            'include' => 'unknown,unknown2'
+        ]);
+
+        $this->getJson($url)->assertStatus(400);
+    }
 }
