@@ -33,4 +33,34 @@ class IncludeCategoryTest extends TestCase
             ]
         ]);
     }
+
+    /** @test */
+    public function can_include_related_categories_of_multiple_articles(): void
+    {
+        $appointment = Appointment::factory()->create();
+        $appointment2 = Appointment::factory()->create();
+
+        $url = route('api.v1.appointments.index', [
+            'include' => 'category'
+        ]);
+
+        $this->getJson($url)->assertJson([
+            'included' => [
+                [
+                    'type' => 'categories',
+                    'id' => $appointment->category->getRouteKey(),
+                    'attributes' => [
+                        'name' => $appointment->category->name
+                    ]
+                ],
+                [
+                    'type' => 'categories',
+                    'id' => $appointment2->category->getRouteKey(),
+                    'attributes' => [
+                        'name' => $appointment2->category->name
+                    ]
+                ],
+            ]
+        ]);
+    }
 }

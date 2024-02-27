@@ -2,7 +2,6 @@
 
 namespace App\JsonApi\Traits;
 
-use App\Http\Resources\CategoryResource;
 use App\JsonApi\Document;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
@@ -109,17 +108,28 @@ Trait JsonApiResource
 
     /**
      * Se reescribe el metodo collection para añadirle el atributo 'links'
-     * a la respues, lo cual, nos ahorra el tener que crear un archivo
+     * a la respuesta, lo cual, nos ahorra el tener que crear un archivo
      * LaravelCollection solo para añadir dicho atributo.
      *
-     * @param [type] $resource
+     * Se devuelve LengthAwarePaginator ya que se estan retornando los
+     * resultados por defecto.
+     * @param LengthAwarePaginator $resource
+     *
      * @return AnonymousResourceCollection
      */
-    public static function collection($resource): AnonymousResourceCollection
+    public static function collection($resources): AnonymousResourceCollection
     {
-        $collection = parent::collection($resource);
+        $collection = parent::collection($resources);
 
-        $collection->with['links'] = ['self' => $resource->path()];
+        if (request()->filled('include')) {
+            foreach ($resources as $resource) {
+                foreach( $resource->getIncludes() as $include) {
+                    $collection->with['included'][] = $include;
+                }
+            }
+        }
+
+        $collection->with['links'] = ['self' => $resources->path()];
 
         return $collection;
     }
