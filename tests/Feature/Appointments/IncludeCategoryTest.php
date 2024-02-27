@@ -2,9 +2,9 @@
 
 namespace Tests\Feature\Appointments;
 
+use Tests\TestCase;
 use App\Models\Appointment;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\TestCase;
 
 class IncludeCategoryTest extends TestCase
 {
@@ -37,8 +37,8 @@ class IncludeCategoryTest extends TestCase
     /** @test */
     public function can_include_related_categories_of_multiple_articles(): void
     {
-        $appointment = Appointment::factory()->create();
-        $appointment2 = Appointment::factory()->create();
+        $appointment = Appointment::factory()->create()->load('category');
+        $appointment2 = Appointment::factory()->create()->load('category');
 
         $url = route('api.v1.appointments.index', [
             'include' => 'category'

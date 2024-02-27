@@ -6,6 +6,7 @@ use App\JsonApi\Document;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Http\Resources\MissingValue;
 
 /**
  * Trait para los Laravel Resources, en donde se hacen ciertas modificaciones para
@@ -28,15 +29,22 @@ Trait JsonApiResource
     public function toArray(Request $request): array
     {
         if ( request()->filled('include') ) {
-            $this->with['included'] = $this->getIncludes();
+            foreach( $this->getIncludes() as $include) {
+
+                if( $include->resource instanceof MissingValue) {
+                    continue;
+                };
+
+                $this->with['included'][] = $include;
+            }
         }
 
-        return Document::type($this->getResourceType())
-            ->id($this->getRouteKey())
+        return Document::type($this->resource->getResourceType())
+            ->id($this->resource->getRouteKey())
             ->attributes($this->filterAttributes( $this->toJsonApi() ))
             ->relationshipLinks( $this->getRelationshipLinks() )
             ->links([
-                'self' => route('api.v1.'.$this->getResourceType().'.show', $this)
+                'self' => route('api.v1.'.$this->resource->getResourceType().'.show', $this)
             ])
             ->get('data');
     }
@@ -122,8 +130,21 @@ Trait JsonApiResource
         $collection = parent::collection($resources);
 
         if (request()->filled('include')) {
+
+            // $resources - retorna una coleccion de recursos.
             foreach ($resources as $resource) {
+
+                // $resource->getIncludes() retorna un arreglo con las categorias de cada appointment.
                 foreach( $resource->getIncludes() as $include) {
+
+                    /** En caso de que se reciban objetos de relaciones que no se hayan
+                     * especificado para precargar, se recibe una instancia de
+                     * MissingValue, debido a la funcion whenLoaded().
+                     */
+                    if( $include->resource instanceof MissingValue) {
+                        continue;
+                    };
+
                     $collection->with['included'][] = $include;
                 }
             }

@@ -44,7 +44,7 @@ class AppointmentResource extends JsonResource
     public function getIncludes(): array
     {
         return [
-            CategoryResource::make($this->category)
+            CategoryResource::make($this->whenLoaded('category'))
         ];
     }
 
