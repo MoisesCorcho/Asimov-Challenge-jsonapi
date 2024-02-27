@@ -2,6 +2,7 @@
 
 namespace App\JsonApi\Traits;
 
+use App\Http\Resources\CategoryResource;
 use App\JsonApi\Document;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
@@ -27,6 +28,10 @@ Trait JsonApiResource
      */
     public function toArray(Request $request): array
     {
+        if ( request()->filled('include') ) {
+            $this->with['included'] = $this->getIncludes();
+        }
+
         return Document::type($this->getResourceType())
             ->id($this->getRouteKey())
             ->attributes($this->filterAttributes( $this->toJsonApi() ))
@@ -35,6 +40,11 @@ Trait JsonApiResource
                 'self' => route('api.v1.'.$this->getResourceType().'.show', $this)
             ])
             ->get('data');
+    }
+
+    public function getIncludes(): array
+    {
+        return [];
     }
 
     /**

@@ -11,7 +11,7 @@ class AppointmentResource extends JsonResource
 
     /**
      * Se especifican en un arreglo los atributos del recurso
-     * que queremos convertir en JSON.
+     * que se quiere convertir en JSON.
      *
      * @return array
      */
@@ -25,7 +25,7 @@ class AppointmentResource extends JsonResource
     }
 
     /**
-     * Se especifican las relaciones de los links que queremos
+     * Se especifican las relaciones de los links que se quieran
      * generar.
      *
      * @return array
@@ -33,6 +33,19 @@ class AppointmentResource extends JsonResource
     public function getRelationshipLinks(): array
     {
         return ['category'];
+    }
+
+    /**
+     * Se especifican los documentos que se quieran incluir dentro
+     * del documento JSON:API.
+     *
+     * @return array
+     */
+    public function getIncludes(): array
+    {
+        return [
+            CategoryResource::make($this->category)
+        ];
     }
 
 }
