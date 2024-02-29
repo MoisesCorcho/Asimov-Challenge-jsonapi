@@ -64,6 +64,9 @@ class JsonApiQueryBuilder
             foreach (request('filter', []) as $filter => $value) {
                 abort_unless(in_array($filter, $allowedFilters), 400);
 
+                /** El metodo hasNamedScope es util para verificar la existencias
+                 * de un Scope en el modelo.
+                 */
                 $this->hasNamedScope($filter)
                     ? $this->{$filter}($value)
                     : $this->where($filter, 'LIKE', '%'.$value.'%');

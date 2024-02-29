@@ -2,10 +2,10 @@
 
 namespace Tests\Feature\Appointments;
 
+use Tests\TestCase;
+use App\Models\Category;
 use App\Models\Appointment;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
-use Tests\TestCase;
 
 class FilterAppointmentsTest extends TestCase
 {
@@ -85,6 +85,28 @@ class FilterAppointmentsTest extends TestCase
             ->assertJsonCount(1, 'data')
             ->assertSee('2026-01-01')
             ->assertDontSee('2025-02-03');
+    }
+
+    /** @test */
+    public function can_filter_appointments_by_category(): void
+    {
+        $cat1 = Category::factory()->hasAppointments(3)->create(['id' => 1]);
+        $cat2 = Category::factory()->hasAppointments()->create(['id' => 2]);
+        Appointment::factory()->count(2)->create();
+
+        // appointments?filter[categories]=1,2
+        $url = route('api.v1.appointments.index', [
+            'filter' => [
+                'categories' => '1,2'
+            ]
+        ]);
+
+        $this->getJson($url)
+            ->assertJsonCount(4, 'data')
+            ->assertSee($cat1->appointments[0]->date)
+            ->assertSee($cat1->appointments[1]->date)
+            ->assertSee($cat1->appointments[2]->date)
+            ->assertSee($cat2->appointments[0]->date);
     }
 
     /** @test */

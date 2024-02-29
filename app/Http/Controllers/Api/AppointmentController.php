@@ -20,7 +20,7 @@ class AppointmentController extends Controller
     {
         $appointments = Appointment::query()
             ->allowedIncludes(['category'])
-            ->allowedFilters(['date', 'year', 'month', 'start_time', 'email'])
+            ->allowedFilters(['date', 'year', 'month', 'start_time', 'email', 'categories'])
             ->allowedSorts(['date', 'start_time'])
             ->sparseFieldset()
             ->jsonPaginate();
