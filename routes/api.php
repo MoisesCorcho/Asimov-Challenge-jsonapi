@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\AuthorController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\AppointmentController;
 
@@ -16,6 +17,10 @@ Route::apiResource('appointments', AppointmentController::class);
 Route::apiResource('categories', CategoryController::class)
     ->only('index', 'show');
 
+Route::apiResource('authors', AuthorController::class)
+    ->only('index', 'show');
+
+// Son rutas necesarias para generar los links de las relaciones (self y related)
 Route::get('appointments/{appointment}/relationships/category', fn() => 'TODO')
     ->name('appointments.relationships.category');
 

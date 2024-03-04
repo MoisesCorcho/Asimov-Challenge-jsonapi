@@ -36,13 +36,14 @@ class AppointmentResource extends JsonResource
     }
 
     /**
-     * Se especifican los documentos que se quieran incluir dentro
+     * Se especifican las relaciones que se quieran incluir dentro
      * del documento JSON:API.
      *
      * @return array
      */
     public function getIncludes(): array
     {
+        // Se utiliza $this->whenLoaded() para verificar si la relación ha sido precargada.
         return [
             CategoryResource::make($this->whenLoaded('category'))
         ];

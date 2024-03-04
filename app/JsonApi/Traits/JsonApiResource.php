@@ -28,17 +28,35 @@ Trait JsonApiResource
      */
     public function toArray(Request $request): array
     {
+        /** La llave include se agrega con el metodo $this->with()
+         *  ya que debe estar al mismo nivel que la llave 'data' agregada
+         *  de manera automatica por los LaravelResources.
+         */
         if ( request()->filled('include') ) {
+
+            // $resource->getIncludes() retorna un arreglo con las categorias de cada appointment.
             foreach( $this->getIncludes() as $include) {
 
+                /** En caso de que se reciban objetos de relaciones que no se hayan
+                 * especificado para precargar, se recibe una instancia de
+                 * MissingValue, debido a la funcion whenLoaded().
+                 */
                 if( $include->resource instanceof MissingValue) {
                     continue;
                 };
 
+                /** Se colocan los corchetes luego de ['included] para
+                 * que se agregue $include como nuevo elemento del
+                 * arreglo ya que ['included'], va a ser un arreglo con
+                 * todas las relaciones que se incluyan en el query
+                 * parameter 'include'
+                 */
                 $this->with['included'][] = $include;
             }
         }
 
+        /** Se crea el documento JSON:API a retornar con la clase
+         * 'Document' creada manualmente. */
         return Document::type($this->resource->getResourceType())
             ->id($this->resource->getRouteKey())
             ->attributes($this->filterAttributes( $this->toJsonApi() ))
@@ -49,6 +67,16 @@ Trait JsonApiResource
             ->get('data');
     }
 
+    /**
+     * Establecemos este metodo aqui en el Trait para hacer la inclusion
+     * de este metodo opcional en la creacion del documento JSON:API.
+     * Para darle valores lo definimos en el LaravelResource que se necesite.
+     *
+     * Se especifican los documentos que se quieran incluir dentro
+     * del documento JSON:API.
+     *
+     * @return array
+     */
     public function getIncludes(): array
     {
         return [];
@@ -57,7 +85,10 @@ Trait JsonApiResource
     /**
      * Establecemos este metodo aqui en el Trait para hacer la inclusion
      * de este metodo opcional en la creacion del documento JSON:API.
-     * Para darle valores lo definimos en LaravelResource que se necesite.
+     * Para darle valores lo definimos en el LaravelResource que se necesite.
+     *
+     * Dentro del LaravelResource en este metodo se especifican las relaciones
+     * de los links que se quieran generar.
      *
      * @return array
      */
@@ -145,6 +176,12 @@ Trait JsonApiResource
                         continue;
                     };
 
+                    /** Se colocan los corchetes luego de ['included] para
+                     * que se agregue $include como nuevo elemento del
+                     * arreglo ya que ['included'], va a ser un arreglo con
+                     * todas las relaciones que se incluyan en el query
+                     * parameter 'include'
+                     */
                     $collection->with['included'][] = $include;
                 }
             }
