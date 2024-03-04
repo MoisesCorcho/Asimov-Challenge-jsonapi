@@ -18,7 +18,10 @@ class UpdateAppointmentTest extends TestCase
     {
         $this->withoutExceptionHandling();
 
-        $appointment = Appointment::factory()->create();
+        $appointment = Appointment::factory()->create([
+            'date' => '2026-01-01',
+            'start_time' => '12:00',
+        ]);
 
         $response = $this->patchJson(route('api.v1.appointments.update', $appointment),
             Document::type('appointments')
