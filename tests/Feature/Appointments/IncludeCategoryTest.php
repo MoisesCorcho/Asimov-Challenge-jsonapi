@@ -12,7 +12,7 @@ class IncludeCategoryTest extends TestCase
     use RefreshDatabase;
 
     /** @test */
-    public function can_include_related_category_of_an_article(): void
+    public function can_include_related_category_of_an_appointment(): void
     {
         $appointment = Appointment::factory()->create();
 
@@ -35,7 +35,7 @@ class IncludeCategoryTest extends TestCase
     }
 
     /** @test */
-    public function can_include_related_categories_of_multiple_articles(): void
+    public function can_include_related_categories_of_multiple_appointments(): void
     {
         $appointment = Appointment::factory()->create()->load('category');
         $appointment2 = Appointment::factory()->create()->load('category');

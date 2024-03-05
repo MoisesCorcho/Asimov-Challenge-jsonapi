@@ -168,17 +168,17 @@ class JsonApiTestResponse
      */
     public function assertJsonApiRelationshipLinks(): Closure
     {
-        return function ($model, $relationships) {
+        return function ($model, $relations) {
             /** @var TestResponse $this */
 
-            foreach ($relationships as $relationship) {
+            foreach ($relations as $relation) {
                 $this->assertJson([
                     'data' => [
                         'relationships' => [
-                            'category' => [
+                            $relation => [
                                 'links' => [
-                                    'self' => route("api.v1.{$model->getResourceType()}.relationships.{$relationship}", $model),
-                                    'related' => route("api.v1.{$model->getResourceType()}.{$relationship}", $model)
+                                    'self' => route("api.v1.{$model->getResourceType()}.relationships.{$relation}", $model),
+                                    'related' => route("api.v1.{$model->getResourceType()}.{$relation}", $model)
                                 ]
                             ]
                         ]

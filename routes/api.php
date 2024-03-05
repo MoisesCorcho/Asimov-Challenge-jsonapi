@@ -26,3 +26,9 @@ Route::get('appointments/{appointment}/relationships/category', fn() => 'TODO')
 
 Route::get('appointments/{appointment}/category', fn() => 'TODO')
     ->name('appointments.category');
+
+Route::get('appointments/{appointment}/relationships/author', fn() => 'TODO')
+    ->name('appointments.relationships.author');
+
+Route::get('appointments/{appointment}/author', fn() => 'TODO')
+    ->name('appointments.author');

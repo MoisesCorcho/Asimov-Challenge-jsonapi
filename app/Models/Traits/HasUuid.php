@@ -6,6 +6,11 @@ use Illuminate\Support\Str;
 
 Trait HasUuid {
 
+    public function getKeyType()
+    {
+        return 'uuid';
+    }
+
     public function getIncrementing()
     {
         return false;

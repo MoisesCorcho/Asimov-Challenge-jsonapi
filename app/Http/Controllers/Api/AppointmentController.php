@@ -19,7 +19,7 @@ class AppointmentController extends Controller
     public function index(): AnonymousResourceCollection
     {
         $appointments = Appointment::query()
-            ->allowedIncludes(['category'])
+            ->allowedIncludes(['category', 'author'])
             ->allowedFilters(['date', 'year', 'month', 'start_time', 'email', 'categories'])
             ->allowedSorts(['date', 'start_time'])
             ->sparseFieldset()
@@ -44,7 +44,7 @@ class AppointmentController extends Controller
     public function show($appointment): JsonResource
     {
         $appointment = Appointment::where('id', $appointment)
-            ->allowedIncludes(['category'])
+            ->allowedIncludes(['category', 'author'])
             ->sparseFieldset()
             ->firstOrFail();
 

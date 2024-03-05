@@ -32,7 +32,7 @@ class AppointmentResource extends JsonResource
      */
     public function getRelationshipLinks(): array
     {
-        return ['category'];
+        return ['category', 'author'];
     }
 
     /**
@@ -45,7 +45,8 @@ class AppointmentResource extends JsonResource
     {
         // Se utiliza $this->whenLoaded() para verificar si la relación ha sido precargada.
         return [
-            CategoryResource::make($this->whenLoaded('category'))
+            CategoryResource::make($this->whenLoaded('category')),
+            AuthorResource::make($this->whenLoaded('author'))
         ];
     }
 
