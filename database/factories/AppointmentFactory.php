@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\User;
 use App\Models\Category;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -18,10 +19,11 @@ class AppointmentFactory extends Factory
     public function definition(): array
     {
         return [
-            'date' => $this->faker->date('Y-m-d'),
-            'start_time' => $this->faker->time('H:i:s'),
-            'email' => $this->faker->unique()->safeEmail,
-            'category_id' => Category::factory()
+            'date'        => $this->faker->date('Y-m-d'),
+            'start_time'  => $this->faker->time('H:i:s'),
+            'email'       => $this->faker->unique()->safeEmail,
+            'category_id' => Category::factory(),
+            'user_id'     => User::factory()
         ];
     }
 }

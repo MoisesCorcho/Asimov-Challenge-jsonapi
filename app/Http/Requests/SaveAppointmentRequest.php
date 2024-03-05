@@ -47,7 +47,8 @@ class SaveAppointmentRequest extends FormRequest
             'data.relationships.category.data.id' => [
                 Rule::requiredIf( ! $this->route('appointment') ),
                 Rule::exists('categories', 'id')
-            ]
+            ],
+            'data.relationships.author' => []
         ];
     }
 
@@ -65,6 +66,7 @@ class SaveAppointmentRequest extends FormRequest
     {
         // Obtenemos la llave data de la peticion recibida.
         $data = parent::validated()['data'];
+
         // Obtenemos la llave attributes de data
         $attributes = $data['attributes'];
 
@@ -74,10 +76,42 @@ class SaveAppointmentRequest extends FormRequest
 
             $relationships = $data['relationships'];
 
-            // Se añade al arreglo que se va a retornar la clave de la relacion.
-            $attributes['category_id'] = $relationships['category']['data']['id'];
+            // Se añade al arreglo que se va a retornar las claves de las relaciones.
+            foreach ($relationships as $key => $relationship) {
+                $attributes = array_merge($attributes, $this->{$key}($relationship));
+            }
+
         }
 
         return $attributes;
+    }
+
+    /**
+     * Se obtiene el id de la categoria y se retorna un arreglo
+     * ['category_id' => 1] para luego combinarlo con el array que
+     * se retornará en la funcion 'validated()'
+     *
+     * @return array
+     */
+    public function category(array $relationship): array
+    {
+        $categoryId = $relationship['data']['id'];
+
+        return ['category_id' => $categoryId];
+    }
+
+    /**
+     * Se obtiene el id del autor y se retorna un arreglo
+     * ['user_id' => uuid] para luego combinarlo con el array que
+     * se retornará en la funcion 'validated()'
+     *
+     * @param array $relationship
+     * @return array
+     */
+    public function author(array $relationship): array
+    {
+        $authorId = $relationship['data']['id'];
+
+        return ['user_id' => $authorId];
     }
 }

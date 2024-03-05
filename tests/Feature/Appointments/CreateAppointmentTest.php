@@ -3,9 +3,10 @@
 namespace Tests\Feature\Appointments;
 
 use Tests\TestCase;
+use App\Models\User;
+use App\Models\Category;
 use App\JsonApi\Document;
 use App\Models\Appointment;
-use App\Models\Category;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class CreateAppointmentTest extends TestCase
@@ -18,6 +19,7 @@ class CreateAppointmentTest extends TestCase
     {
         $this->withoutExceptionHandling();
 
+        $user = User::factory()->create();
         $category = Category::factory()->create();
 
         $response = $this->postJson(route('api.v1.appointments.store'),
@@ -27,7 +29,8 @@ class CreateAppointmentTest extends TestCase
                     'start_time' => '11:00',
                     'email' => 'falseemail@gmail.com'
                 ])->relationshipsData([
-                    'category' => $category
+                    'category' => $category,
+                    'author'   => $user
                 ])->toArray()
         );
 
@@ -39,6 +42,12 @@ class CreateAppointmentTest extends TestCase
             'date' => $appointment->date,
             'start_time' => substr($appointment->start_time, 0, 5),
             'email' => $appointment->email
+        ]);
+
+        $this->assertDatabaseHas('appointments', [
+            'date'        => $appointment->date,
+            'user_id'     => $user->id,
+            'category_id' => $category->id
         ]);
 
     }
@@ -208,14 +217,15 @@ class CreateAppointmentTest extends TestCase
     /** @test */
     public function appointments_may_only_last_an_hour()
     {
-
+        $user = User::factory()->create();
         $category = Category::factory()->create();
 
         Appointment::create([
             'date' => '2026-01-01',
             'start_time' => '12:00',
             'email' => 'falseemail@gmail.com',
-            'category_id' => $category->getRouteKey()
+            'category_id' => $category->getRouteKey(),
+            'user_id' => $user->getRouteKey()
         ]);
 
         $response = $this->postJson(route('api.v1.appointments.store'), [
