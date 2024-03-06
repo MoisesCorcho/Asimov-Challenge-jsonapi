@@ -22,6 +22,10 @@ class AppointmentCategoryController extends Controller
 
     public function update(Appointment $appointment, Request $request)
     {
+        $request->validate([
+            'data.id' => ['exists:categories,id']
+        ]);
+
         $categoryId = $request->input('data.id');
 
         $appointment->update(['category_id' => $categoryId]);

@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Symfony\Component\HttpFoundation\Response;
 
-class ValidateJsonApidocument
+class ValidateJsonApiDocument
 {
     /**
      * Handle an incoming request.

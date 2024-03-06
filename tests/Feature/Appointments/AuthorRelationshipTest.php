@@ -77,4 +77,24 @@ class AuthorRelationshipTest extends TestCase
         ]);
 
     }
+
+    /** @test */
+    public function author_must_exist_in_database(): void
+    {
+        $appointment = Appointment::factory()->create();
+
+        $url = route('api.v1.appointments.relationships.author', $appointment);
+
+        $this->patchJson($url, [
+            'data' => [
+                'type' => 'authors',
+                'id'   => 'non-existing'
+            ]
+        ])->assertJsonApiValidationErrors('data.id');
+
+        $this->assertDatabaseHas('appointments', [
+            'date' => $appointment->date,
+            'user_id' => $appointment->user_id
+        ]);
+    }
 }

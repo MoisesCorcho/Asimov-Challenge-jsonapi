@@ -22,6 +22,10 @@ class AppointmentAuthorController extends Controller
 
     public function update(Appointment $appointment, Request $request)
     {
+        $request->validate([
+            'data.id' => ['exists:users,id']
+        ]);
+
         $authorId = $request->input('data.id');
 
         $appointment->update(['user_id' => $authorId]);

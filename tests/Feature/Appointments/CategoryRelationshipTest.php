@@ -77,4 +77,24 @@ class CategoryRelationshipTest extends TestCase
         ]);
 
     }
+
+    /** @test */
+    public function category_must_exist_in_database(): void
+    {
+        $appointment = Appointment::factory()->create();
+
+        $url = route('api.v1.appointments.relationships.category', $appointment);
+
+        $this->patchJson($url, [
+            'data' => [
+                'type' => 'categories',
+                'id'   => 'non-existing'
+            ]
+        ])->assertJsonApiValidationErrors('data.id');
+
+        $this->assertDatabaseHas('appointments', [
+            'date' => $appointment->date,
+            'category_id' => $appointment->category_id
+        ]);
+    }
 }
