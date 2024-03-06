@@ -17,6 +17,20 @@ Trait JsonApiResource
     abstract public function toJsonApi(): array;
 
     /**
+     * Funcion para crear el documento JSON:API para las rutas de self.
+     * Ej. 'api/v1/appointments/{appointment}/relationships/category'
+     *
+     * @param [type] $resource
+     * @return array
+     */
+    public static function identifier($resource): array
+    {
+        return Document::type( $resource->getResourceType() )
+            ->id( $resource->getRouteKey() )
+            ->toArray();
+    }
+
+    /**
      * Transform the resource into an array.
      * Se usa el metodo get('data') para que no hayan errores tales
      * como que en algunas ocasiones se duplique la llave 'data',
