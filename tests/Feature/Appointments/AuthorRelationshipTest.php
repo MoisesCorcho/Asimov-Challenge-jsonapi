@@ -3,6 +3,7 @@
 namespace Tests\Feature\Appointments;
 
 use Tests\TestCase;
+use App\Models\User;
 use App\Models\Appointment;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -46,5 +47,34 @@ class AuthorRelationshipTest extends TestCase
                 ]
             ]
         ]);
+    }
+
+    /** @test */
+    public function can_update_the_associated_author(): void
+    {
+        $author = User::factory()->create();
+        $appointment = Appointment::factory()->create();
+
+        $url = route('api.v1.appointments.relationships.author', $appointment);
+
+        $response = $this->patchJson($url, [
+            'data' => [
+                'type' => 'authors',
+                'id'   => (string) $author->getRouteKey()
+            ]
+        ]);
+
+        $response->assertExactJson([
+            'data' => [
+                'type' => 'authors',
+                'id'   => (string) $author->getRouteKey()
+            ]
+        ]);
+
+        $this->assertDatabaseHas('appointments', [
+            'date' => $appointment->date,
+            'user_id' => (string) $author->id
+        ]);
+
     }
 }

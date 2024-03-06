@@ -25,11 +25,15 @@ Route::apiResource('authors', AuthorController::class)
 // Son rutas necesarias para generar los links de las relaciones (self y related)
 Route::get('appointments/{appointment}/relationships/category', [AppointmentCategoryController::class, 'index'])
     ->name('appointments.relationships.category');
+Route::patch('appointments/{appointment}/relationships/category', [AppointmentCategoryController::class, 'update'])
+    ->name('appointments.relationships.category');
 
 Route::get('appointments/{appointment}/category', [AppointmentCategoryController::class, 'show'])
     ->name('appointments.category');
 
 Route::get('appointments/{appointment}/relationships/author', [AppointmentAuthorController::class, 'index'])
+    ->name('appointments.relationships.author');
+Route::patch('appointments/{appointment}/relationships/author', [AppointmentAuthorController::class, 'update'])
     ->name('appointments.relationships.author');
 
 Route::get('appointments/{appointment}/author', [AppointmentAuthorController::class, 'show'])

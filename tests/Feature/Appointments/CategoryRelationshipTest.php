@@ -4,6 +4,7 @@ namespace Tests\Feature\Appointments;
 
 use Tests\TestCase;
 use App\Models\Appointment;
+use App\Models\Category;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class CategoryRelationshipTest extends TestCase
@@ -46,5 +47,34 @@ class CategoryRelationshipTest extends TestCase
                 ]
             ]
         ]);
+    }
+
+    /** @test */
+    public function can_update_the_associated_category(): void
+    {
+        $category = Category::factory()->create();
+        $appointment = Appointment::factory()->create();
+
+        $url = route('api.v1.appointments.relationships.category', $appointment);
+
+        $response = $this->patchJson($url, [
+            'data' => [
+                'type' => 'categories',
+                'id'   => (string) $category->getRouteKey()
+            ]
+        ]);
+
+        $response->assertExactJson([
+            'data' => [
+                'type' => 'categories',
+                'id'   => (string) $category->getRouteKey()
+            ]
+        ]);
+
+        $this->assertDatabaseHas('appointments', [
+            'date' => $appointment->date,
+            'category_id' => (string) $category->id
+        ]);
+
     }
 }

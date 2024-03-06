@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Models\Category;
 use App\Models\Appointment;
+use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\CategoryResource;
 
@@ -16,5 +18,14 @@ class AppointmentCategoryController extends Controller
     public function show(Appointment $appointment)
     {
         return CategoryResource::make($appointment->category);
+    }
+
+    public function update(Appointment $appointment, Request $request)
+    {
+        $categoryId = $request->input('data.id');
+
+        $appointment->update(['category_id' => $categoryId]);
+
+        return CategoryResource::identifier($appointment->category);
     }
 }
