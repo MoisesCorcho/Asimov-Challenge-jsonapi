@@ -6,7 +6,7 @@ use Closure;
 use Illuminate\Support\Str;
 use Illuminate\Testing\TestResponse;
 use PHPUnit\Framework\Assert as PHPUnit;
-use PHPUnit\Framework\ExpectationFailedException;
+use PHPUnit\Framework\InvalidArgumentException;
 
 /**
  * Clase llamada a traves del metodo mixin de TestResponse
@@ -36,7 +36,7 @@ class JsonApiTestResponse
 
             $this->assertJsonStructure([
                 'errors' => [
-                    '*' => []
+                    '*' => ['title', 'detail']
                 ]
             ]);
 
