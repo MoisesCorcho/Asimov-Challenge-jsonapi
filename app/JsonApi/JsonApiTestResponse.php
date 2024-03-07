@@ -18,6 +18,37 @@ use PHPUnit\Framework\ExpectationFailedException;
 class JsonApiTestResponse
 {
     /**
+     * Macro para verificar si se devuelven errores HTTP en formato JSON:API.
+     *
+     * Todos los parametros son opcionales, para esto, al momento de usar esta
+     * funcion, se deben mandar 'named arguments' en lugar de 'positional arguments'.
+     *
+     * @param string $title // Titulo del error
+     * @param string $detail // detalle del error
+     * @param string $status // estado del error
+     *
+     * @return Closure
+     */
+    public function assertJsonApiError(): Closure
+    {
+        return function($title = null, $detail = null, $status = null) {
+            /** @var TestResponse $this */
+
+            $this->assertJsonStructure([
+                'errors' => [
+                    '*' => []
+                ]
+            ]);
+
+            $title  && $this->assertJsonFragment(['title' => $title]);
+            $detail && $this->assertJsonFragment(['detail' => $detail]);
+            $status && $this->assertJsonFragment(['status' => $status])->assertStatus((int) $status);
+
+            return $this;
+        };
+    }
+
+    /**
      * Macro para verificar si se devuelven errores de validación en formato JSON:API.
      *
      * Este método macro se utiliza para verificar si se devuelven errores de validación

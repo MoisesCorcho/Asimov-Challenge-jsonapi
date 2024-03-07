@@ -47,15 +47,11 @@ class ListAppointmentTest extends TestCase
 
         $response = $this->getJson(route('api.v1.appointments.show', 'non-existing'));
 
-        $response->assertJsonStructure([
-            'errors' => [
-                '*' => []
-            ]
-        ])->assertJsonFragment([
-            'title' => 'Not Found',
-            'detail' => "No records found with that id.",
-            'status' => '404'
-        ])->assertStatus(404);
+        $response->assertJsonApiError(
+            title: 'Not Found',
+            detail: "No records found with that id.",
+            status: '404'
+        );
     }
 
 }
