@@ -41,4 +41,21 @@ class ListAppointmentTest extends TestCase
         ]);
     }
 
+    /** @test */
+    public function it_returns_a_json_api_error_object_when_an_article_is_not_found(): void
+    {
+
+        $response = $this->getJson(route('api.v1.appointments.show', 'non-existing'));
+
+        $response->assertJsonStructure([
+            'errors' => [
+                '*' => []
+            ]
+        ])->assertJsonFragment([
+            'title' => 'Not Found',
+            'detail' => "No records found with that id.",
+            'status' => '404'
+        ])->assertStatus(404);
+    }
+
 }
