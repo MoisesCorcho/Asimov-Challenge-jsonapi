@@ -6,7 +6,7 @@ use Closure;
 use Illuminate\Support\Str;
 use Illuminate\Testing\TestResponse;
 use PHPUnit\Framework\Assert as PHPUnit;
-use PHPUnit\Framework\InvalidArgumentException;
+use PHPUnit\Framework\ExpectationFailedException;
 
 /**
  * Clase llamada a traves del metodo mixin de TestResponse
@@ -34,11 +34,20 @@ class JsonApiTestResponse
         return function($title = null, $detail = null, $status = null) {
             /** @var TestResponse $this */
 
-            $this->assertJsonStructure([
-                'errors' => [
-                    '*' => ['title', 'detail']
-                ]
-            ]);
+            try {
+
+                $this->assertJsonStructure([
+                    'errors' => [
+                        '*' => ['title', 'detail']
+                    ]
+                ]);
+            } catch (\TypeError $th) {
+                PHPUnit::fail(
+                    "Error objects MUST be returned as an array keyed by errors in the top level of a JSON:API document."
+                    .PHP_EOL.PHP_EOL.
+                    $th->getMessage()
+                );
+            }
 
             $title  && $this->assertJsonFragment(['title' => $title]);
             $detail && $this->assertJsonFragment(['detail' => $detail]);
