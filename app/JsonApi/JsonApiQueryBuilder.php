@@ -4,6 +4,7 @@ namespace App\JsonApi;
 
 use Closure;
 use Illuminate\Support\Str;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 /**
  * Clase llamada a traves del metodo mixin de Builder
@@ -39,7 +40,9 @@ class JsonApiQueryBuilder
 
                     $sortField = ltrim($sortField, '-');
 
-                    abort_unless(in_array($sortField, $allowedSorts), 400);
+                    if ( !in_array($sortField, $allowedSorts) ) {
+                        throw new BadRequestHttpException("The sort field '{$sortField}' is not allowed in the '{$this->getResourceType()}' resource.");
+                    }
 
                     $this->orderBy($sortField, $sortDirection);
                 }
@@ -62,7 +65,10 @@ class JsonApiQueryBuilder
         return function($allowedFilters) {
             /** @var Builder $this */
             foreach (request('filter', []) as $filter => $value) {
-                abort_unless(in_array($filter, $allowedFilters), 400);
+
+                if ( !in_array($filter, $allowedFilters) ) {
+                    throw new BadRequestHttpException("The filter '{$filter}' is not allowed in the '{$this->getResourceType()}' resource.");
+                }
 
                 /** El metodo hasNamedScope es util para verificar la existencias
                  * de un Scope en el modelo.
@@ -99,7 +105,10 @@ class JsonApiQueryBuilder
 
             // Se recorre el array de includes.
             foreach ($includes as $include) {
-                abort_unless(in_array($include, $allowedIncludes) ,400);
+
+                if ( !in_array($include, $allowedIncludes) ) {
+                    throw new BadRequestHttpException("The include relationship '{$include}' is not allowed in the '{$this->getResourceType()}' resource.");
+                }
 
                 // Añadimos el include para la precarga.
                 $this->with($include);

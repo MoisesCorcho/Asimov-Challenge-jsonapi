@@ -138,7 +138,11 @@ class SortAppointmentsTest extends TestCase
 
         $url = route('api.v1.appointments.index', ['sort' => 'unknown']);
 
-        $this->getJson($url)->assertStatus(400);
+        $this->getJson($url)->assertJsonApiError(
+            title: 'Bad Request',
+            detail: "The sort field 'unknown' is not allowed in the 'appointments' resource.",
+            status: '400'
+        );
     }
 
 }

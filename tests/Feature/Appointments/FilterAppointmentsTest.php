@@ -171,13 +171,16 @@ class FilterAppointmentsTest extends TestCase
         Appointment::factory()->count(2)->create();
 
         // appointments?filter[unknown]='filter'
-
         $url = route('api.v1.appointments.index', [
             'filter' => [
                 'unknown' => 'filter'
             ]
         ]);
 
-        $this->getJson($url)->assertStatus(400);
+        $this->getJson($url)->assertJsonApiError(
+            title: 'Bad Request',
+            detail: "The filter 'unknown' is not allowed in the 'appointments' resource.",
+            status: '400'
+        );
     }
 }
