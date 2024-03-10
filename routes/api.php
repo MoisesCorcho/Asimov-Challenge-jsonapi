@@ -1,8 +1,10 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\LoginController;
 use App\Http\Controllers\Api\AuthorController;
 use App\Http\Controllers\Api\CategoryController;
+use App\Http\Middleware\ValidateJsonApiDocument;
 use App\Http\Controllers\Api\AppointmentController;
 use App\Http\Controllers\Api\AppointmentAuthorController;
 use App\Http\Controllers\Api\AppointmentCategoryController;
@@ -38,3 +40,8 @@ Route::patch('appointments/{appointment}/relationships/author', [AppointmentAuth
 
 Route::get('appointments/{appointment}/author', [AppointmentAuthorController::class, 'show'])
     ->name('appointments.author');
+
+// Authentication
+Route::withoutMiddleware(ValidateJsonApiDocument::class)
+    ->post('login', LoginController::class)
+    ->name('login');
