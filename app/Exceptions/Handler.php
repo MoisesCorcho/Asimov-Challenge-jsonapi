@@ -2,8 +2,9 @@
 
 namespace App\Exceptions;
 
-use Illuminate\Validation\ValidationException;
+use Illuminate\Http\JsonResponse;
 
+use Illuminate\Validation\ValidationException;
 use App\Http\Responses\JsonApiValidationErrorResponse;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -49,8 +50,18 @@ class Handler extends ExceptionHandler
      * @param ValidationException $exception
      * @return JsonApiValidationErrorResponse
      */
-    protected function invalidJson($request, ValidationException $exception): JsonApiValidationErrorResponse
+    protected function invalidJson($request, ValidationException $exception): JsonResponse
     {
-        return new JsonApiValidationErrorResponse($exception);
+        /** No se quiere formatear las respuestas de error para
+         * validaciones del login, con lo cual, cuando la ruta
+         * no sea la del login se formatea con especificacion
+         * JSON:API y cuando sea de login, se retorna la
+         * respuesta por defecto de Laravel
+         */
+        if ( !$request->routeIs('api.v1.login') ) {
+            return new JsonApiValidationErrorResponse($exception);
+        }
+
+        return parent::invalidJson($request, $exception);
     }
 }
