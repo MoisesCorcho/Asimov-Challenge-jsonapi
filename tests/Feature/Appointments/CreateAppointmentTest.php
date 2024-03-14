@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\Category;
 use App\JsonApi\Document;
 use App\Models\Appointment;
+use Laravel\Sanctum\Sanctum;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class CreateAppointmentTest extends TestCase
@@ -15,12 +16,23 @@ class CreateAppointmentTest extends TestCase
     use RefreshDatabase;
 
     /** @test */
+    public function guests_cannot_create_appointments()
+    {
+        $this->postJson(route('api.v1.appointments.store'))
+        ->assertUnauthorized();
+
+        $this->assertDatabaseCount('appointments', 0);
+    }
+
+    /** @test */
     public function can_create_appointments()
     {
         $this->withoutExceptionHandling();
 
         $user = User::factory()->create();
         $category = Category::factory()->create();
+
+        Sanctum::actingAs($user);
 
         $response = $this->postJson(route('api.v1.appointments.store'),
             Document::type('appointments')
@@ -55,6 +67,11 @@ class CreateAppointmentTest extends TestCase
     /** @test */
     public function date_is_required()
     {
+        /** Cualquier usuario que se cree tendrá los permisos necesarios
+         * para la autenticacion de Sanctum
+         */
+        Sanctum::actingAs(User::factory()->create());
+
         $response = $this->postJson(route('api.v1.appointments.store'), [
             'data' => [
                 'type' => 'appointments',
@@ -71,6 +88,11 @@ class CreateAppointmentTest extends TestCase
     /** @test */
     public function date_format_must_be_Year_month_day()
     {
+        /** Cualquier usuario que se cree tendrá los permisos necesarios
+         * para la autenticacion de Sanctum
+         */
+        Sanctum::actingAs(User::factory()->create());
+
         $response = $this->postJson(route('api.v1.appointments.store'), [
             'data' => [
                 'type' => 'appointments',
@@ -88,6 +110,10 @@ class CreateAppointmentTest extends TestCase
     /** @test */
     public function the_appointment_date_must_be_greater_than_or_equal_to_the_current_date()
     {
+        /** Cualquier usuario que se cree tendrá los permisos necesarios
+         * para la autenticacion de Sanctum
+         */
+        Sanctum::actingAs(User::factory()->create());
 
         $response = $this->postJson(route('api.v1.appointments.store'), [
             'data' => [
@@ -106,6 +132,11 @@ class CreateAppointmentTest extends TestCase
     /** @test */
     public function start_time_is_required()
     {
+        /** Cualquier usuario que se cree tendrá los permisos necesarios
+         * para la autenticacion de Sanctum
+         */
+        Sanctum::actingAs(User::factory()->create());
+
         $response = $this->postJson(route('api.v1.appointments.store'), [
             'data' => [
                 'type' => 'appointments',
@@ -122,6 +153,11 @@ class CreateAppointmentTest extends TestCase
     /** @test */
     public function email_is_required()
     {
+        /** Cualquier usuario que se cree tendrá los permisos necesarios
+         * para la autenticacion de Sanctum
+         */
+        Sanctum::actingAs(User::factory()->create());
+
         $response = $this->postJson(route('api.v1.appointments.store'), [
             'data' => [
                 'type' => 'appointments',
@@ -138,6 +174,11 @@ class CreateAppointmentTest extends TestCase
     /** @test */
     public function date_can_not_be_weekeend()
     {
+        /** Cualquier usuario que se cree tendrá los permisos necesarios
+         * para la autenticacion de Sanctum
+         */
+        Sanctum::actingAs(User::factory()->create());
+
         $response = $this->postJson(route('api.v1.appointments.store'), [
             'data' => [
                 'type' => 'appointments',
@@ -155,6 +196,11 @@ class CreateAppointmentTest extends TestCase
     /** @test */
     public function time_format_must_be_Hour_Minutes()
     {
+        /** Cualquier usuario que se cree tendrá los permisos necesarios
+         * para la autenticacion de Sanctum
+         */
+        Sanctum::actingAs(User::factory()->create());
+
         $response = $this->postJson(route('api.v1.appointments.store'), [
             'data' => [
                 'type' => 'appointments',
@@ -172,6 +218,11 @@ class CreateAppointmentTest extends TestCase
     /** @test */
     public function time_can_not_be_before_the_current_time()
     {
+        /** Cualquier usuario que se cree tendrá los permisos necesarios
+         * para la autenticacion de Sanctum
+         */
+        Sanctum::actingAs(User::factory()->create());
+
         $response = $this->postJson(route('api.v1.appointments.store'), [
             'data' => [
                 'type' => 'appointments',
@@ -189,6 +240,11 @@ class CreateAppointmentTest extends TestCase
     /** @test */
     public function time_must_be_in_office_time()
     {
+        /** Cualquier usuario que se cree tendrá los permisos necesarios
+         * para la autenticacion de Sanctum
+         */
+        Sanctum::actingAs(User::factory()->create());
+
         $response = $this->postJson(route('api.v1.appointments.store'), [
             'data' => [
                 'type' => 'appointments',
@@ -217,6 +273,11 @@ class CreateAppointmentTest extends TestCase
     /** @test */
     public function appointments_may_only_last_an_hour()
     {
+        /** Cualquier usuario que se cree tendrá los permisos necesarios
+         * para la autenticacion de Sanctum
+         */
+        Sanctum::actingAs(User::factory()->create());
+
         $user = User::factory()->create();
         $category = Category::factory()->create();
 
@@ -284,6 +345,11 @@ class CreateAppointmentTest extends TestCase
     /** @test */
     public function email_address_must_be_a_valid_email()
     {
+        /** Cualquier usuario que se cree tendrá los permisos necesarios
+         * para la autenticacion de Sanctum
+         */
+        Sanctum::actingAs(User::factory()->create());
+
         $response = $this->postJson(route('api.v1.appointments.store'), [
             'data' => [
                 'type' => 'appointments',
@@ -301,6 +367,11 @@ class CreateAppointmentTest extends TestCase
     /** @test */
     public function category_relationship_is_required()
     {
+        /** Cualquier usuario que se cree tendrá los permisos necesarios
+         * para la autenticacion de Sanctum
+         */
+        Sanctum::actingAs(User::factory()->create());
+
         $response = $this->postJson(route('api.v1.appointments.store'), [
             'data' => [
                 'type' => 'appointments',
@@ -318,6 +389,11 @@ class CreateAppointmentTest extends TestCase
     /** @test */
     public function category_must_exist_in_database()
     {
+        /** Cualquier usuario que se cree tendrá los permisos necesarios
+         * para la autenticacion de Sanctum
+         */
+        Sanctum::actingAs(User::factory()->create());
+
         $response = $this->postJson(route('api.v1.appointments.store'),
             Document::type('appointments')
                 ->attributes([

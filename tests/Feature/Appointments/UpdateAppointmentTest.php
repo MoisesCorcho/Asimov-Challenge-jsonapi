@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\Category;
 use App\JsonApi\Document;
 use App\Models\Appointment;
+use Laravel\Sanctum\Sanctum;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class UpdateAppointmentTest extends TestCase
@@ -15,9 +16,25 @@ class UpdateAppointmentTest extends TestCase
     use RefreshDatabase;
 
     /** @test */
+    public function guests_cannot_update_appointments()
+    {
+        $appointment = Appointment::factory()->create([
+            'date' => '2026-01-01',
+            'start_time' => '12:00',
+        ]);
+
+        $this->patchJson(route('api.v1.appointments.update', $appointment))->assertUnauthorized();
+    }
+
+    /** @test */
     public function can_update_appointments()
     {
         $this->withoutExceptionHandling();
+
+        /** Cualquier usuario que se cree tendrá los permisos necesarios
+         * para la autenticacion de Sanctum
+         */
+        Sanctum::actingAs(User::factory()->create());
 
         $appointment = Appointment::factory()->create([
             'date' => '2026-01-01',
@@ -49,7 +66,11 @@ class UpdateAppointmentTest extends TestCase
     /** @test */
     public function date_is_required()
     {
+        /** Cualquier usuario que se cree tendrá los permisos necesarios
+         * para la autenticacion de Sanctum
+         */
         $appointment = Appointment::factory()->create();
+        Sanctum::actingAs($appointment->author);
 
         $response = $this->patchJson(route('api.v1.appointments.update', $appointment), [
             'data' => [
@@ -68,6 +89,11 @@ class UpdateAppointmentTest extends TestCase
     /** @test */
     public function date_format_must_be_Year_month_day()
     {
+        /** Cualquier usuario que se cree tendrá los permisos necesarios
+         * para la autenticacion de Sanctum
+         */
+        Sanctum::actingAs(User::factory()->create());
+
         $appointment = Appointment::factory()->create();
 
         $response = $this->patchJson(route('api.v1.appointments.update', $appointment), [
@@ -88,6 +114,10 @@ class UpdateAppointmentTest extends TestCase
     /** @test */
     public function the_appointment_date_must_be_greater_than_or_equal_to_the_current_date()
     {
+        /** Cualquier usuario que se cree tendrá los permisos necesarios
+         * para la autenticacion de Sanctum
+         */
+        Sanctum::actingAs(User::factory()->create());
 
         $appointment = Appointment::factory()->create();
 
@@ -109,6 +139,11 @@ class UpdateAppointmentTest extends TestCase
     /** @test */
     public function start_time_is_required()
     {
+        /** Cualquier usuario que se cree tendrá los permisos necesarios
+         * para la autenticacion de Sanctum
+         */
+        Sanctum::actingAs(User::factory()->create());
+
         $appointment = Appointment::factory()->create();
 
         $response = $this->patchJson(route('api.v1.appointments.update', $appointment), [
@@ -128,6 +163,11 @@ class UpdateAppointmentTest extends TestCase
     /** @test */
     public function email_is_required()
     {
+        /** Cualquier usuario que se cree tendrá los permisos necesarios
+         * para la autenticacion de Sanctum
+         */
+        Sanctum::actingAs(User::factory()->create());
+
         $appointment = Appointment::factory()->create();
 
         $response = $this->patchJson(route('api.v1.appointments.update', $appointment), [
@@ -147,6 +187,11 @@ class UpdateAppointmentTest extends TestCase
     /** @test */
     public function date_can_not_be_weekeend()
     {
+        /** Cualquier usuario que se cree tendrá los permisos necesarios
+         * para la autenticacion de Sanctum
+         */
+        Sanctum::actingAs(User::factory()->create());
+
         $appointment = Appointment::factory()->create();
 
         $response = $this->patchJson(route('api.v1.appointments.update', $appointment), [
@@ -167,6 +212,11 @@ class UpdateAppointmentTest extends TestCase
     /** @test */
     public function time_format_must_be_Hour_Minutes()
     {
+        /** Cualquier usuario que se cree tendrá los permisos necesarios
+         * para la autenticacion de Sanctum
+         */
+        Sanctum::actingAs(User::factory()->create());
+
         $appointment = Appointment::factory()->create();
 
         $response = $this->patchJson(route('api.v1.appointments.update', $appointment), [
@@ -187,6 +237,11 @@ class UpdateAppointmentTest extends TestCase
     /** @test */
     public function time_can_not_be_before_the_current_time()
     {
+        /** Cualquier usuario que se cree tendrá los permisos necesarios
+         * para la autenticacion de Sanctum
+         */
+        Sanctum::actingAs(User::factory()->create());
+
         $appointment = Appointment::factory()->create();
 
         $response = $this->patchJson(route('api.v1.appointments.update', $appointment), [
@@ -207,6 +262,11 @@ class UpdateAppointmentTest extends TestCase
     /** @test */
     public function time_must_be_in_office_time()
     {
+        /** Cualquier usuario que se cree tendrá los permisos necesarios
+         * para la autenticacion de Sanctum
+         */
+        Sanctum::actingAs(User::factory()->create());
+
         $appointment = Appointment::factory()->create();
 
         $response = $this->patchJson(route('api.v1.appointments.update', $appointment), [
@@ -239,6 +299,11 @@ class UpdateAppointmentTest extends TestCase
     /** @test */
     public function appointments_may_only_last_an_hour()
     {
+        /** Cualquier usuario que se cree tendrá los permisos necesarios
+         * para la autenticacion de Sanctum
+         */
+        Sanctum::actingAs(User::factory()->create());
+
         $user = User::factory()->create();
         $category = Category::factory()->create();
 
@@ -313,6 +378,11 @@ class UpdateAppointmentTest extends TestCase
     /** @test */
     public function email_address_must_be_a_valid_email()
     {
+        /** Cualquier usuario que se cree tendrá los permisos necesarios
+         * para la autenticacion de Sanctum
+         */
+        Sanctum::actingAs(User::factory()->create());
+
         $appointment = Appointment::factory()->create();
 
         $response = $this->patchJson(route('api.v1.appointments.update', $appointment), [
