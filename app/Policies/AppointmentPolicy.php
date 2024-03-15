@@ -29,7 +29,9 @@ class AppointmentPolicy
      */
     public function create(User $user): bool
     {
-        //
+        /** Se verifica que el token del modelo tenga los permisos necesarios
+         * para crear.*/
+        return $user->tokenCan('appointment:create');
     }
 
     /**
@@ -37,8 +39,10 @@ class AppointmentPolicy
      */
     public function update(User $user, Appointment $appointment): bool
     {
-        /** Se verifica si el modelo '$user' es igual al modelo $appointment->author */
-        return $user->is($appointment->author);
+        /** Se verifica si el modelo '$user' es igual al modelo $appointment->author
+         * y que el token del modelo tenga los permisos necesarios para actualizar.
+        */
+        return $user->is($appointment->author) && $user->tokenCan('appointment:update');
     }
 
     /**
@@ -46,7 +50,10 @@ class AppointmentPolicy
      */
     public function delete(User $user, Appointment $appointment): bool
     {
-        return $user->is($appointment->author);
+        /** Se verifica si el modelo '$user' es igual al modelo $appointment->author
+         * y que el token del modelo tenga los permisos necesarios para eliminar.
+        */
+        return $user->is($appointment->author) && $user->tokenCan('appointment:delete');
     }
 
     /**

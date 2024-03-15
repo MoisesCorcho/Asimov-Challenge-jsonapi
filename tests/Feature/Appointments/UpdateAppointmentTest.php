@@ -45,7 +45,11 @@ class UpdateAppointmentTest extends TestCase
             'start_time' => '12:00',
         ]);
 
-        Sanctum::actingAs($appointment->author);
+        /** El token para este usuario se crea con la habilidad (Hability)
+         *  de crear, es decir, con la convencion 'appointment:update'
+         *  para que asi, no haya problemas de autorizacion con los Policies
+         */
+        Sanctum::actingAs($appointment->author, ['appointment:update']);
 
         $response = $this->patchJson(route('api.v1.appointments.update', $appointment),
             Document::type('appointments')

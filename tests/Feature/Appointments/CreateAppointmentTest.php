@@ -36,7 +36,11 @@ class CreateAppointmentTest extends TestCase
         $user = User::factory()->create();
         $category = Category::factory()->create();
 
-        Sanctum::actingAs($user);
+        /** El token para este usuario se crea con la habilidad (Hability)
+         *  de crear, es decir, con la convencion 'appointment:create'
+         *  para que asi, no haya problemas de autorizacion con los Policies
+         */
+        Sanctum::actingAs($user, ['appointment:create']);
 
         $response = $this->postJson(route('api.v1.appointments.store'),
             Document::type('appointments')

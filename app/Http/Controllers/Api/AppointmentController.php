@@ -42,6 +42,8 @@ class AppointmentController extends Controller
      */
     public function store(SaveAppointmentRequest $request): AppointmentResource
     {
+        $this->authorize('create', new Appointment());
+
         $appointment = Appointment::create($request->validated());
 
         return AppointmentResource::make($appointment);

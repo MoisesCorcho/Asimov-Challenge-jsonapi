@@ -36,7 +36,11 @@ class DeleteAppointmentTest extends TestCase
          */
         $appointment = Appointment::factory()->create();
 
-        Sanctum::actingAs($appointment->author);
+        /** El token para este usuario se crea con la habilidad (Hability)
+         *  de crear, es decir, con la convencion 'appointment:delete'
+         *  para que asi, no haya problemas de autorizacion con los Policies
+         */
+        Sanctum::actingAs($appointment->author, ['appointment:delete']);
 
         $this->deleteJson(route('api.v1.appointments.destroy', $appointment))
             ->assertNoContent();
