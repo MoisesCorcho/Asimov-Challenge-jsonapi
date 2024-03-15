@@ -4,12 +4,14 @@ namespace App\Http\Controllers\Api;
 
 use App\Models\Appointment;
 
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\AppointmentResource;
 use App\Http\Requests\SaveAppointmentRequest;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 class AppointmentController extends Controller
 {
@@ -63,6 +65,11 @@ class AppointmentController extends Controller
      */
     public function update(SaveAppointmentRequest $request, Appointment $appointment): AppointmentResource
     {
+        /** Se manda como primer parametro el nombre del metodo de la politica
+         * Policy (que se encuentra en la ruta App\Policies), y como segundo el modelo.
+         */
+        $this->authorize('update', $appointment);
+
         $appointment->update($request->validated());
 
         return AppointmentResource::make($appointment);
@@ -71,8 +78,13 @@ class AppointmentController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Appointment $appointment): Response
+    public function destroy(Appointment $appointment, Request $request): Response
     {
+        /** Se manda como primer parametro el nombre del metodo de la politica
+         * Policy (que se encuentra en la ruta App\Policies), y como segundo el modelo.
+         */
+        $this->authorize('delete', $appointment);
+
         $appointment->delete();
 
         return response()->noContent();

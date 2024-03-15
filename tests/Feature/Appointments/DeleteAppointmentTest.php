@@ -19,13 +19,17 @@ class DeleteAppointmentTest extends TestCase
         $appointment = Appointment::factory()->create();
 
         $this->deleteJson(route('api.v1.appointments.destroy', $appointment))
-            ->assertUnauthorized();
+            ->assertJsonApiError(
+                title: 'Unauthenticated',
+                detail: 'This action requires authentication.',
+                status: '401'
+            );
 
         $this->assertDatabaseCount('appointments', 1);
     }
 
     /** @test */
-    public function can_delete_appointments(): void
+    public function can_delete_owned_appointments(): void
     {
         /** Cualquier usuario que se cree tendrá los permisos necesarios
          * para la autenticacion de Sanctum
@@ -38,5 +42,21 @@ class DeleteAppointmentTest extends TestCase
             ->assertNoContent();
 
         $this->assertDatabaseCount('appointments', 0);
+    }
+
+    /** @test */
+    public function can_delete_appointments_owned_by_other_users(): void
+    {
+        /** Cualquier usuario que se cree tendrá los permisos necesarios
+         * para la autenticacion de Sanctum
+         */
+        $appointment = Appointment::factory()->create();
+
+        Sanctum::actingAs(User::factory()->create());
+
+        $this->deleteJson(route('api.v1.appointments.destroy', $appointment))
+            ->assertForbidden();
+
+        $this->assertDatabaseCount('appointments', 1);
     }
 }

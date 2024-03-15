@@ -23,23 +23,29 @@ class UpdateAppointmentTest extends TestCase
             'start_time' => '12:00',
         ]);
 
-        $this->patchJson(route('api.v1.appointments.update', $appointment))->assertUnauthorized();
+        $this->patchJson(route('api.v1.appointments.update', $appointment))
+            ->assertJsonApiError(
+                title: 'Unauthenticated',
+                detail: 'This action requires authentication.',
+                status: '401'
+            );
     }
 
     /** @test */
-    public function can_update_appointments()
+    public function can_update_owned_appointments()
     {
         $this->withoutExceptionHandling();
 
         /** Cualquier usuario que se cree tendrá los permisos necesarios
          * para la autenticacion de Sanctum
          */
-        Sanctum::actingAs(User::factory()->create());
 
         $appointment = Appointment::factory()->create([
             'date' => '2026-01-01',
             'start_time' => '12:00',
         ]);
+
+        Sanctum::actingAs($appointment->author);
 
         $response = $this->patchJson(route('api.v1.appointments.update', $appointment),
             Document::type('appointments')
@@ -61,6 +67,30 @@ class UpdateAppointmentTest extends TestCase
             'start_time' => $appointment2->start_time,
             'email' => $appointment2->email
         ]);
+    }
+
+    /** @test */
+    public function cannot_update_appointments_owned_by_other_users()
+    {
+        /** Cualquier usuario que se cree tendrá los permisos necesarios
+         * para la autenticacion de Sanctum
+         */
+        Sanctum::actingAs(User::factory()->create());
+
+        $appointment = Appointment::factory()->create([
+            'date' => '2026-01-01',
+            'start_time' => '12:00',
+        ]);
+
+        $this->patchJson(route('api.v1.appointments.update', $appointment),
+            Document::type('appointments')
+                ->id(1)
+                ->attributes([
+                    'date' => '2026-01-01',
+                    'start_time' => '10:00',
+                    'email' => 'updatedupdatedfalseemail@gmail.com'
+                ])->toArray()
+        )->assertForbidden();
     }
 
     /** @test */
