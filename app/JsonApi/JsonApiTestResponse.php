@@ -41,7 +41,7 @@ class JsonApiTestResponse
                         '*' => ['title', 'detail']
                     ]
                 ]);
-            } catch (\TypeError $th) {
+            } catch (\Throwable $th) {
                 PHPUnit::fail(
                     "Error objects MUST be returned as an array keyed by errors in the top level of a JSON:API document."
                     .PHP_EOL.PHP_EOL.

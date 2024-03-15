@@ -19,7 +19,11 @@ class CreateAppointmentTest extends TestCase
     public function guests_cannot_create_appointments()
     {
         $this->postJson(route('api.v1.appointments.store'))
-        ->assertUnauthorized();
+            ->assertJsonApiError(
+                title: 'Unauthenticated',
+                detail: 'This action requires authentication.',
+                status: '401'
+            );
 
         $this->assertDatabaseCount('appointments', 0);
     }
