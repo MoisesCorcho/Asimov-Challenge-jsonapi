@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Auth;
 
+use App\Models\Permission;
 use Tests\TestCase;
 use App\Models\User;
 use Laravel\Sanctum\PersonalAccessToken;
@@ -29,7 +30,46 @@ class AccessTokenTest extends TestCase
 
         $dbToken = PersonalAccessToken::findToken($token);
 
+        /** A traves de la relacion polimorfica 'tokenable' se puede
+         * acceder al usuario que tiene asociado y con el metodo 'is'
+         * se compara el usuario asociado al token con el usuario que
+         * se creó primeramente en el test.
+         */
         $this->assertTrue($dbToken->tokenable->is($user));
+    }
+
+    /** @test */
+    public function user_permissions_are_assigned_as_abilities_to_the_token(): void
+    {
+        $user = User::factory()->create();
+
+        $permission1 = Permission::factory()->create();
+        $permission2 = Permission::factory()->create();
+        $permission3 = Permission::factory()->create();
+
+        /** En algun momento del registro o en la administracion, se hace
+         * la supocision de que en algun momento se le asignan estos
+         * permisos al usuario.
+         */
+        $user->givePermissionTo($permission1);
+        $user->givePermissionTo($permission2);
+
+        $url = route('api.v1.login');
+
+        $data = $this->validCredentials([
+            'email' => $user->email
+        ]);
+
+        $response = $this->postJson($url, $data);
+
+        $token = $response->json('plain_text_token');
+
+        $dbToken = PersonalAccessToken::findToken($token);
+
+        // Se verifica si el token tiene la habilidad
+        $this->assertTrue($dbToken->can($permission1->name));
+        $this->assertTrue($dbToken->can($permission2->name));
+        $this->assertFalse($dbToken->can($permission3->name));
     }
 
     /** @test */

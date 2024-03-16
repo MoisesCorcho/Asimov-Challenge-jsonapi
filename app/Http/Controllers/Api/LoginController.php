@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Responses\TokenResponse;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 
@@ -20,8 +21,12 @@ class LoginController extends Controller
 
         $user = User::whereEmail($request->email)->first();
 
-        /** auth.failed es un mensaje de validacion que se encuentra en
-         * resources/lang
+        /** Si no se encuentra el usuario en base de datos o si la
+         * contraseña no es correcta, se arroja una excepcion
+         * ValidationException.
+         *
+         * auth.failed es un mensaje de validacion que se encuentra en
+         * resources/lang.
          */
         if ( ! $user || ! Hash::check($request->password, $user->password)) {
             throw ValidationException::withMessages([
@@ -29,22 +34,6 @@ class LoginController extends Controller
             ]);
         }
 
-        /** Generate the Token.
-         * Al momento de crear el token, como segundo parametros se añaden politicas
-         * bajo la convencion que se ha escogido en donde se tiene el nombre del
-         * recurso en singular seguido de la accion que puede realizar.
-        */
-        $plainTextToken = $user->createToken(
-            $request->device_name,
-            [
-                'appointment:create',
-                'appointment:update',
-                'appointment:delete',
-            ]
-        )->plainTextToken;
-
-        return response()->json([
-            'plain_text_token' => $plainTextToken
-        ]);
+        return new TokenResponse($user);
     }
 }
