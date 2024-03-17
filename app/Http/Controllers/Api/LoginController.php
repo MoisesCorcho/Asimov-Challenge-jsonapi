@@ -11,6 +11,22 @@ use Illuminate\Validation\ValidationException;
 
 class LoginController extends Controller
 {
+    /**
+     * El middleware 'guest' puede ser encontrado en App\htpp\Kernel\
+     * en donde está registrado y hace referencia al middleware
+     * '\App\Http\Middleware\RedirectIfAuthenticated'.
+     */
+    public function __construct()
+    {
+        $this->middleware('guest:sanctum');
+    }
+
+    /**
+     * Handle the incoming request.
+     *
+     * @param Request $request
+     * @return void
+     */
     public function __invoke(Request $request)
     {
         $request->validate([

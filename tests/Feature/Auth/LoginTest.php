@@ -8,7 +8,7 @@ use App\Models\User;
 use Laravel\Sanctum\PersonalAccessToken;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
-class AccessTokenTest extends TestCase
+class LoginTest extends TestCase
 {
 
     use RefreshDatabase;
@@ -36,6 +36,23 @@ class AccessTokenTest extends TestCase
          * se creó primeramente en el test.
          */
         $this->assertTrue($dbToken->tokenable->is($user));
+    }
+
+    /** @test */
+    public function only_one_access_token_can_be_issued_at_a_time(): void
+    {
+        $user = User::factory()->create();
+
+        $accessToken = $user->createToken($user->name)->plainTextToken;
+
+        // Se manda el header en la peticion (request).
+        $this->withHeader('Authorization', 'Bearer '.$accessToken)
+            ->postJson(route('api.v1.login'))
+            ->assertNoContent();
+
+        // Se convierte a colecccion solo porque se necesita que se iterable
+        // el segundo parametro.
+        $this->assertCount(1, collect($user->tokens()->count()));
     }
 
     /** @test */

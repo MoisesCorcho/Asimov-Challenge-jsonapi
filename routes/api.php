@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\LoginController;
 use App\Http\Controllers\Api\AuthorController;
+use App\Http\Controllers\Api\LogoutController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Middleware\ValidateJsonApiDocument;
 use App\Http\Controllers\Api\AppointmentController;
@@ -45,3 +46,7 @@ Route::get('appointments/{appointment}/author', [AppointmentAuthorController::cl
 Route::withoutMiddleware(ValidateJsonApiDocument::class)
     ->post('login', LoginController::class)
     ->name('login');
+
+Route::withoutMiddleware(ValidateJsonApiDocument::class)
+    ->post('logout', LogoutController::class)
+    ->name('logout');
