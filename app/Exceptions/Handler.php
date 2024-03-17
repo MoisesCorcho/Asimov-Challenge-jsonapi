@@ -63,7 +63,7 @@ class Handler extends ExceptionHandler
          * JSON:API y cuando sea de login, se retorna la
          * respuesta por defecto de Laravel
          */
-        if ( !$request->routeIs('api.v1.login') ) {
+        if ( ! $request->routeIs('api.v1.login') && ! $request->routeIs('api.v1.register') ) {
             return new JsonApiValidationErrorResponse($exception);
         }
 
