@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use Illuminate\Http\Request;
 use App\JsonApi\JsonApiQueryBuilder;
 use App\JsonApi\JsonApiTestResponse;
 use Illuminate\Testing\TestResponse;
@@ -33,5 +34,14 @@ class JsonApiServiceProvider extends ServiceProvider
 
         // Agrega el mixin JsonApiTestResponse a la clase TestResponse para aplicar funcionalidades de respuesta de prueba JSON API.
         TestResponse::mixin(new JsonApiTestResponse);
+
+        Request::macro('isJsonApi', function() {
+            /** @var Request $this */
+            if ($this->header('accept') === 'application/vnd.api+json') {
+                return true;
+            }
+
+            return $this->header('content-type') === 'application/vnd.api+json';
+        });
     }
 }

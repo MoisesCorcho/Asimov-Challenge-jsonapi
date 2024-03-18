@@ -13,6 +13,13 @@ class LoginTest extends TestCase
 
     use RefreshDatabase;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->withoutJsonApiHeaders();
+    }
+
     /** @test */
     public function can_issue_access_tokens(): void
     {

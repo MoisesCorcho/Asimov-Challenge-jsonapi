@@ -58,12 +58,12 @@ class Handler extends ExceptionHandler
     protected function invalidJson($request, ValidationException $exception): JsonResponse
     {
         /** No se quiere formatear las respuestas de error para
-         * validaciones del login, con lo cual, cuando la ruta
-         * no sea la del login se formatea con especificacion
-         * JSON:API y cuando sea de login, se retorna la
-         * respuesta por defecto de Laravel
+         * autenticacion, con lo cual, cuando se estén enviando
+         * los headers referentes a JSON:API se formatea con
+         * especificacion JSON:API, en caso contrario, se retorna
+         * la respuesta por defecto de Laravel.
          */
-        if ( ! $request->routeIs('api.v1.login') && ! $request->routeIs('api.v1.register') ) {
+        if ( $request->isJsonApi() ) {
             return new JsonApiValidationErrorResponse($exception);
         }
 
