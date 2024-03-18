@@ -44,7 +44,15 @@ class AppointmentController extends Controller
     {
         $this->authorize('create', new Appointment());
 
-        $appointment = Appointment::create($request->validated());
+        $data = $request->validated()['data'];
+        $appointmentData = $data['attributes'];
+
+        if ( isset($data['relationships']) ) {
+            $appointmentData['category_id'] = $data['relationships']['category']['data']['id'];
+            $appointmentData['user_id'] = $data['relationships']['author']['data']['id'];
+        }
+
+        $appointment = Appointment::create($appointmentData);
 
         return AppointmentResource::make($appointment);
     }
@@ -72,7 +80,21 @@ class AppointmentController extends Controller
          */
         $this->authorize('update', $appointment);
 
-        $appointment->update($request->validated());
+        $data = $request->validated()['data'];
+        $appointmentData = $data['attributes'];
+
+        if ( isset($data['relationships']) ) {
+
+            if ( isset($data['relationships']['author']) ) {
+                $appointmentData['user_id'] = $data['relationships']['author']['data']['id'];
+            }
+
+            if ( isset($data['relationships']['category']) ) {
+                $appointmentData['category_id'] = $data['relationships']['category']['data']['id'];
+            }
+        }
+
+        $appointment->update($appointmentData);
 
         return AppointmentResource::make($appointment);
     }
