@@ -11,7 +11,6 @@ use App\Http\Resources\AppointmentResource;
 use App\Http\Requests\SaveAppointmentRequest;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 class AppointmentController extends Controller
 {
@@ -44,13 +43,11 @@ class AppointmentController extends Controller
     {
         $this->authorize('create', new Appointment());
 
-        $data = $request->validated()['data'];
-        $appointmentData = $data['attributes'];
+        $request->validatedData();
+        $appointmentData = $request->getAttributes();
 
-        if ( isset($data['relationships']) ) {
-            $appointmentData['category_id'] = $data['relationships']['category']['data']['id'];
-            $appointmentData['user_id'] = $data['relationships']['author']['data']['id'];
-        }
+        $appointmentData['category_id'] = $request->getRelationshipId('category');
+        $appointmentData['user_id'] = $request->getRelationshipId('author');
 
         $appointment = Appointment::create($appointmentData);
 
@@ -80,18 +77,15 @@ class AppointmentController extends Controller
          */
         $this->authorize('update', $appointment);
 
-        $data = $request->validated()['data'];
-        $appointmentData = $data['attributes'];
+        $request->validatedData();
+        $appointmentData = $request->getAttributes();
 
-        if ( isset($data['relationships']) ) {
+        if ( $request->hasRelationship('author') ) {
+            $appointmentData['user_id'] = $request->getRelationshipId('author');
+        }
 
-            if ( isset($data['relationships']['author']) ) {
-                $appointmentData['user_id'] = $data['relationships']['author']['data']['id'];
-            }
-
-            if ( isset($data['relationships']['category']) ) {
-                $appointmentData['category_id'] = $data['relationships']['category']['data']['id'];
-            }
+        if ( $request->hasRelationship('category') ) {
+            $appointmentData['category_id'] = $request->getRelationshipId('category');
         }
 
         $appointment->update($appointmentData);

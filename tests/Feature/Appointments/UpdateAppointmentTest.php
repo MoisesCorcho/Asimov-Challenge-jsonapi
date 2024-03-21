@@ -74,6 +74,53 @@ class UpdateAppointmentTest extends TestCase
     }
 
     /** @test */
+    public function can_update_owned_appointments_with_relationships()
+    {
+        $this->withoutExceptionHandling();
+
+        $category = Category::factory()->create();
+
+        /** Cualquier usuario que se cree tendrá los permisos necesarios
+         * para la autenticacion de Sanctum
+         */
+        $appointment = Appointment::factory()->create([
+            'date' => '2026-01-01',
+            'start_time' => '12:00',
+        ]);
+
+        /** El token para este usuario se crea con la habilidad (Hability)
+         *  de crear, es decir, con la convencion 'appointment:update'
+         *  para que asi, no haya problemas de autorizacion con los Policies
+         */
+        Sanctum::actingAs($appointment->author, ['appointment:update']);
+
+        $response = $this->patchJson(route('api.v1.appointments.update', $appointment),
+            Document::type('appointments')
+                ->id(1)
+                ->attributes([
+                    'date' => '2026-01-01',
+                    'start_time' => '10:00',
+                    'email' => 'updatedupdatedfalseemail@gmail.com'
+                ])->relationshipsData([
+                    'category' => $category
+                ])->toArray()
+        );
+
+        $response->assertOk();
+
+        $response->assertJsonApiResource($appointment, [
+            'date' => '2026-01-01',
+            'start_time' => '10:00',
+            'email' => 'updatedupdatedfalseemail@gmail.com'
+        ]);
+
+        $this->assertDatabaseHas('appointments', [
+            'date' => '2026-01-01',
+            'category_id' => $category->id
+        ]);
+    }
+
+    /** @test */
     public function cannot_update_appointments_owned_by_other_users()
     {
         /** Cualquier usuario que se cree tendrá los permisos necesarios
