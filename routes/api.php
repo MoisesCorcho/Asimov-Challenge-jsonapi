@@ -21,8 +21,7 @@ Route::apiResource('categories', CategoryController::class)
 Route::apiResource('authors', AuthorController::class)
     ->only('index', 'show');
 
-Route::apiResource('comments', CommentController::class)
-    ->only('index', 'show');
+Route::apiResource('comments', CommentController::class);
 
 // Son rutas necesarias para generar los links de las relaciones (self y related) de Category
 Route::get('appointments/{appointment}/relationships/category', [AppointmentCategoryController::class, 'index'])

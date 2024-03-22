@@ -49,6 +49,7 @@ class JsonApiTestResponse
                 );
             }
 
+            // Se valida que el codigo de la izquierda no sea null, en caso de que no lo sea, se ejecuta el codigo de la derecha.
             $title  && $this->assertJsonFragment(['title' => $title]);
             $detail && $this->assertJsonFragment(['detail' => $detail]);
             $status && $this->assertJsonFragment(['status' => $status])->assertStatus((int) $status);
