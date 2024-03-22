@@ -25,11 +25,13 @@ class SaveCommentRequest extends FormRequest
         return [
             'data.attributes.body' => ['required'],
             'data.relationships.appointment.data.id' => [
-                'required',
+                // Solo será requerido si no se tiene un comentario en la ruta, es decir, si no se está actualizando.
+                Rule::requiredIf( ! $this->route('comment') ),
                 Rule::exists('appointments', 'id')
             ],
             'data.relationships.author.data.id' => [
-                'required',
+                // Solo será requerido si no se tiene un comentario en la ruta, es decir, si no se está actualizando.
+                Rule::requiredIf( ! $this->route('comment') ),
                 Rule::exists('users', 'id')
             ]
         ];

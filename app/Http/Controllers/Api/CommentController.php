@@ -12,10 +12,17 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class CommentController extends Controller
 {
+    /**
+     * Todas las solicitudes a los metodos de este controlador
+     * que se encuentren definidos dentro del constructor
+     * seran interceptadas por el middleware 'auth' con el guard
+     * 'sanctum'que garantiza que el usurio este autenticado
+     * mediante sanctum
+     */
     public function __construct()
     {
         $this->middleware('auth:sanctum', [
-            'only' => ['store']
+            'only' => ['store', 'update']
         ]);
     }
 
@@ -56,9 +63,24 @@ class CommentController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Comment $comment)
+    public function update(SaveCommentRequest $request, Comment $comment)
     {
-        //
+        $this->authorize('update', $comment);
+
+        $comment->body = $request->input('data.attributes.body');
+
+        // El envio de las relaciones se hace opcional.
+        if ( $request->hasRelationship('appointment') ) {
+            $comment->appointment_id = $request->getRelationshipId('appointment');
+        }
+
+        if ( $request->hasRelationship('author') ) {
+            $comment->user_id = $request->getRelationshipId('author');
+        }
+
+        $comment->save();
+
+        return CommentResource::make($comment);
     }
 
     /**

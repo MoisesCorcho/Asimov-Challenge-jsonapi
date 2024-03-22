@@ -45,6 +45,7 @@ class SaveAppointmentRequest extends FormRequest
                 'email'
             ],
             'data.relationships.category.data.id' => [
+                // Solo será requerido si no se tiene un appointment en la ruta, es decir, si no se está actualizando.
                 Rule::requiredIf( ! $this->route('appointment') ),
                 Rule::exists('categories', 'id')
             ],

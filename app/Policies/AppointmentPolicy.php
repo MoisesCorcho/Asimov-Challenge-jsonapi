@@ -41,6 +41,9 @@ class AppointmentPolicy
     {
         /** Se verifica si el modelo '$user' es igual al modelo $appointment->author
          * y que el token del modelo tenga los permisos necesarios para actualizar.
+         *
+         * El $user que se recibe en el parametro es quien esta realizando
+         * la peticion.
         */
         return $user->is($appointment->author) && $user->tokenCan('appointment:update');
     }
