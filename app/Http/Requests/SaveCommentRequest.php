@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Validation\Rule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class SaveCommentRequest extends FormRequest
@@ -22,8 +23,15 @@ class SaveCommentRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'data.attributes.body' => '',
-            'data.relationships' => ''
+            'data.attributes.body' => ['required'],
+            'data.relationships.appointment.data.id' => [
+                'required',
+                Rule::exists('appointments', 'id')
+            ],
+            'data.relationships.author.data.id' => [
+                'required',
+                Rule::exists('users', 'id')
+            ]
         ];
     }
 }
