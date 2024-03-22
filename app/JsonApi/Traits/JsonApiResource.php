@@ -14,6 +14,12 @@ use Illuminate\Http\Resources\MissingValue;
  */
 Trait JsonApiResource
 {
+    /**
+     * Se especifican en un arreglo los atributos del recurso
+     * que se quiere convertir en JSON.
+     *
+     * @return array
+     */
     abstract public function toJsonApi(): array;
 
     /**
