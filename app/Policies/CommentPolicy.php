@@ -45,7 +45,7 @@ class CommentPolicy
      */
     public function delete(User $user, Comment $comment): bool
     {
-        //
+        return $user->is($comment->author) && $user->tokenCan('comment:delete');
     }
 
     /**
