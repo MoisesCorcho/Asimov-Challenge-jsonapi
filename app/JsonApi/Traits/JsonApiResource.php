@@ -26,7 +26,7 @@ Trait JsonApiResource
      * Funcion para crear el documento JSON:API para las rutas de self.
      * Ej. 'api/v1/appointments/{appointment}/relationships/category'
      *
-     * @param [type] $resource
+     * @param Model $resource //El recurso asociado del cual se quieren retornar solo el 'id' y el 'type'
      * @return array
      */
     public static function identifier($resource): array

@@ -10,6 +10,8 @@ class Comment extends Model
 {
     use HasFactory;
 
+    protected $guarded = [];
+
     /**
      * En Eloquent, cuando defines una relación de pertenencia (belongsTo),
      * por defecto, Laravel asume que la clave foránea en la tabla relacionada
