@@ -10,6 +10,7 @@ use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\RegisterController;
 use App\Http\Middleware\ValidateJsonApiDocument;
 use App\Http\Controllers\Api\AppointmentController;
+use App\Http\Controllers\Api\CommentAuthorController;
 use App\Http\Controllers\Api\AppointmentAuthorController;
 use App\Http\Controllers\Api\CommentAppointmentController;
 use App\Http\Controllers\Api\AppointmentCategoryController;
@@ -33,12 +34,15 @@ Route::prefix('appointments/{appointment}')->group(function () {
     // (Las categorias de los Appointments)
     Route::controller(AppointmentCategoryController::class)->group(function () {
 
+        // Obtener el identificador de la Categoria asociada al Appointment.
         Route::get('relationships/category', 'index')
             ->name('appointments.relationships.category');
 
+        // Actualizar Categoria relacionada al Appointment.
         Route::patch('relationships/category', 'update')
             ->name('appointments.relationships.category');
 
+        // Obtener la Categoria asociada al Appointment.
         Route::get('category', 'show')
             ->name('appointments.category');
     });
@@ -47,32 +51,62 @@ Route::prefix('appointments/{appointment}')->group(function () {
     // (Los autores de los Appointemnts)
     Route::controller(AppointmentAuthorController::class)->group(function () {
 
+        // Obtener el identificador del Autor relacionado al Appointment.
         Route::get('relationships/author', 'index')
             ->name('appointments.relationships.author');
 
+        // Actualizar el Autor relacionado al Appointment.
         Route::patch('relationships/author', 'update')
             ->name('appointments.relationships.author');
 
+        // Obtener el Autor relacionado al Appointment.
         Route::get('author', 'show')
             ->name('appointments.author');
     });
 
 });
 
+// Todas estas rutas comparten el mismo inicio de URL asi que se agrupan para colocarle un prefijo
+// y que de esta manera la ruta sea mas corta.
+Route::prefix('comments/{comment}')->group(function () {
 
-// Son rutas necesarias para generar los links de las relaciones (self y related) de Appointment
-// (El Appointment relacion a los Comentarios)
-Route::controller(CommentAppointmentController::class)->prefix('comments/{comment}')->group(function () {
+    // Son rutas necesarias para generar los links de las relaciones (self y related) de Appointment
+    // (El Appointment relacionado a los Comentarios)
+    Route::controller(CommentAppointmentController::class)->group(function () {
 
-    Route::get('relationships/appointment', 'index')
-        ->name('comments.relationships.appointment');
+        // Obtener el identificador del Appointment asociado al Comentario.
+        Route::get('relationships/appointment', 'index')
+            ->name('comments.relationships.appointment');
 
-    Route::patch('relationships/appointment', 'update')
-        ->name('comments.relationships.appointment');
+        // Actualizar el Appointment relacionado al Comentario.
+        Route::patch('relationships/appointment', 'update')
+            ->name('comments.relationships.appointment');
 
-    Route::get('appointment', 'show')
-        ->name('comments.appointment');
+        // Obtener el Appointment asociado al Comentario.
+        Route::get('appointment', 'show')
+            ->name('comments.appointment');
+    });
+
+    Route::controller(CommentAuthorController::class)->group(function () {
+
+        // Obtener el identificador del Autor asociado al Comentario.
+        Route::get('relationships/author', 'index')
+            ->name('comments.relationships.author');
+
+        // Actualizar el Autor asociado al Comentario.
+        Route::patch('relationships/author', 'update')
+            ->name('comments.relationships.author');
+
+        // Obtener el Autor asociado al Comentario.
+        Route::get('relationships', 'show')
+            ->name('comments.author');
+
+    });
+
 });
+
+
+
 
 
 // Authentication
