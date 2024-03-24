@@ -24,38 +24,56 @@ Route::apiResource('authors', AuthorController::class)
 
 Route::apiResource('comments', CommentController::class);
 
-// Son rutas necesarias para generar los links de las relaciones (self y related) de Category
-// (Las categorias de los Appointments)
-Route::get('appointments/{appointment}/relationships/category', [AppointmentCategoryController::class, 'index'])
-    ->name('appointments.relationships.category');
 
-Route::patch('appointments/{appointment}/relationships/category', [AppointmentCategoryController::class, 'update'])
-    ->name('appointments.relationships.category');
+// Todas estas rutas comparten el mismo inicio de URL asi que se agrupan para colocarle un prefijo
+// y que de esta manera la ruta sea mas corta.
+Route::prefix('appointments/{appointment}')->group(function () {
 
-Route::get('appointments/{appointment}/category', [AppointmentCategoryController::class, 'show'])
-    ->name('appointments.category');
+    // Son rutas necesarias para generar los links de las relaciones (self y related) de Category
+    // (Las categorias de los Appointments)
+    Route::controller(AppointmentCategoryController::class)->group(function () {
 
-// Son rutas necesarias para generar los links de las relaciones (self y related) de Author
-// (Los autores de los Appointemnts)
-Route::get('appointments/{appointment}/relationships/author', [AppointmentAuthorController::class, 'index'])
-    ->name('appointments.relationships.author');
+        Route::get('relationships/category', 'index')
+            ->name('appointments.relationships.category');
 
-Route::patch('appointments/{appointment}/relationships/author', [AppointmentAuthorController::class, 'update'])
-    ->name('appointments.relationships.author');
+        Route::patch('relationships/category', 'update')
+            ->name('appointments.relationships.category');
 
-Route::get('appointments/{appointment}/author', [AppointmentAuthorController::class, 'show'])
-    ->name('appointments.author');
+        Route::get('category', 'show')
+            ->name('appointments.category');
+    });
+
+    // Son rutas necesarias para generar los links de las relaciones (self y related) de Author
+    // (Los autores de los Appointemnts)
+    Route::controller(AppointmentAuthorController::class)->group(function () {
+
+        Route::get('relationships/author', 'index')
+            ->name('appointments.relationships.author');
+
+        Route::patch('relationships/author', 'update')
+            ->name('appointments.relationships.author');
+
+        Route::get('author', 'show')
+            ->name('appointments.author');
+    });
+
+});
+
 
 // Son rutas necesarias para generar los links de las relaciones (self y related) de Appointment
 // (El Appointment relacion a los Comentarios)
-Route::get('comments/{comment}/relationships/appointment', [CommentAppointmentController::class, 'index'])
-    ->name('comments.relationships.appointment');
+Route::controller(CommentAppointmentController::class)->prefix('comments/{comment}')->group(function () {
 
-Route::patch('comments/{comment}/relationships/appointment', [CommentAppointmentController::class, 'update'])
-    ->name('comments.relationships.appointment');
+    Route::get('relationships/appointment', 'index')
+        ->name('comments.relationships.appointment');
 
-Route::get('comments/{comment}/appointment', [CommentAppointmentController::class, 'show'])
-    ->name('comments.appointment');
+    Route::patch('relationships/appointment', 'update')
+        ->name('comments.relationships.appointment');
+
+    Route::get('appointment', 'show')
+        ->name('comments.appointment');
+});
+
 
 // Authentication
 Route::withoutMiddleware([
