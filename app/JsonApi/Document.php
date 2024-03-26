@@ -146,4 +146,18 @@ class Document extends Collection
         // Retorna la instancia actual para permitir el encadenamiento de métodos.
         return $this;
     }
+
+
+    /**
+     * Retorna la llave 'data' asociada a un arreglo vacio, esto es la
+     * respuesta que se quiere dar cuando no hay recursos asociados.
+     *
+     * @return array
+     */
+    public static function empty(): array
+    {
+        return [
+            'data' => []
+        ];
+    }
 }

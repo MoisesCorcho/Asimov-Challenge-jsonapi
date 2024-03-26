@@ -7,7 +7,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
-class AppointmentRelationshipTest extends TestCase
+class CommentRelationshipTest extends TestCase
 {
 
     use RefreshDatabase;
@@ -33,6 +33,26 @@ class AppointmentRelationshipTest extends TestCase
             'id' => (string) $comment->getRouteKey(),
             'type' => 'comments'
         ]));
+
+    }
+
+    /** @test */
+    public function it_returns_an_empty_array_when_there_are_no_associated_comments(): void
+    {
+        // Se crea un Appointment sin comentarios.
+        $appointment = Appointment::factory()->create();
+
+        $url = route('api.v1.appointments.relationships.comments', $appointment);
+
+        $response = $this->getJson($url);
+
+        // La llave data debe tener 0 elementos, es decir, un array vacio.
+        $response->assertJsonCount(0, 'data');
+
+        // Se verifica que la respuesta sea un arraglo vacio asociado a la clave 'data'.
+        $response->assertExactJson([
+            'data' => []
+        ]);
 
     }
 }

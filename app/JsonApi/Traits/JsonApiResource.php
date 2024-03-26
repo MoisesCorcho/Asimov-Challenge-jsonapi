@@ -47,6 +47,12 @@ Trait JsonApiResource
      */
     public static function identifiers(Collection $resources)
     {
+        // en caso de que la coleccion de recursos esté vacia se retorna
+        // la llave 'data' asociada a un arary vacio.
+        if ($resources->isEmpty($resources)) {
+            return Document::empty();
+        }
+
         return Document::type( $resources->first()->getResourceType() )
             ->ids( $resources )
             ->toArray();
