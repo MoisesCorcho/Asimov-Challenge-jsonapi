@@ -49,6 +49,23 @@ class Document extends Collection
     }
 
     /**
+     *
+     *
+     * @param Collection $resources
+     * @return Document La instancia actual de Document.
+     */
+    public function ids(Collection $resources): Document
+    {
+        $this->items['data'] = $resources->map(fn ($resource) => [
+            'id' => (string) $resource->getRouteKey(),
+            'type' => $resource->getResourceType()
+        ]);
+
+        // Retorna la instancia actual para permitir el encadenamiento de métodos.
+        return $this;
+    }
+
+    /**
      * Establece los atributos del documento JSON:API.
      *
      * @param array $attributes Los atributos del documento JSON:API.

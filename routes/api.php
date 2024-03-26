@@ -12,6 +12,7 @@ use App\Http\Middleware\ValidateJsonApiDocument;
 use App\Http\Controllers\Api\AppointmentController;
 use App\Http\Controllers\Api\CommentAuthorController;
 use App\Http\Controllers\Api\AppointmentAuthorController;
+use App\Http\Controllers\Api\AppointmentCommentController;
 use App\Http\Controllers\Api\CommentAppointmentController;
 use App\Http\Controllers\Api\AppointmentCategoryController;
 
@@ -64,6 +65,16 @@ Route::prefix('appointments/{appointment}')->group(function () {
             ->name('appointments.author');
     });
 
+    // Son rutas necesarias para generar los links de las relaciones (self y related) de Comment
+    // (Los comentarios de los Appointemnts)
+    Route::controller(AppointmentCommentController::class)->group(function () {
+
+        // Obtener los identificadores de los Comentarios relacionados al Appointment.
+        Route::get('relationships/comments', 'index')
+            ->name('appointments.relationships.comments');
+
+    });
+
 });
 
 // Todas estas rutas comparten el mismo inicio de URL asi que se agrupan para colocarle un prefijo
@@ -104,9 +115,6 @@ Route::prefix('comments/{comment}')->group(function () {
     });
 
 });
-
-
-
 
 
 // Authentication

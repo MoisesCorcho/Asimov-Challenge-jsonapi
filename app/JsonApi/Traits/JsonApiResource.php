@@ -5,8 +5,10 @@ namespace App\JsonApi\Traits;
 use App\JsonApi\Document;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Support\Collection;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Resources\MissingValue;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 /**
  * Trait para los Laravel Resources, en donde se hacen ciertas modificaciones para
@@ -29,10 +31,24 @@ Trait JsonApiResource
      * @param Model $resource //El recurso asociado del cual se quieren retornar solo el 'id' y el 'type'
      * @return array
      */
-    public static function identifier($resource): array
+    public static function identifier(Model $resource): array
     {
         return Document::type( $resource->getResourceType() )
             ->id( $resource->getRouteKey() )
+            ->toArray();
+    }
+
+     /**
+     * Funcion para crear el documento JSON:API para las rutas de self de varios modelos.
+     * Ej. 'api/v1/appointments/{appointment}/relationships/comments'
+     *
+     * @param Collection $resources //Los recursos asociados de los cuales se quieren retornar solo el 'id' y el 'type'
+     * @return array
+     */
+    public static function identifiers(Collection $resources)
+    {
+        return Document::type( $resources->first()->getResourceType() )
+            ->ids( $resources )
             ->toArray();
     }
 

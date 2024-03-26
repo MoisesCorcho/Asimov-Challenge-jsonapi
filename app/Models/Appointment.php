@@ -26,6 +26,11 @@ class Appointment extends Model
         return $this->belongsTo(\App\Models\User::class, 'user_id');
     }
 
+    public function comments()
+    {
+        return $this->hasMany(\App\Models\Comment::class);
+    }
+
     /**
      * Propiedad creada para la funcion sparseFielset dentro de la clase JsonApiQueryBuilder, la cual es usada
      * para un mixin, para añadir funcionalidad al modelo.
