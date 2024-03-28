@@ -55,6 +55,19 @@ class ValidateJsonApiDocumentTest extends TestCase
                 'attributes' => ['name' => 'test']
             ]
         ])->assertJsonApiValidationErrors('data.type');
+
+        /** En caso de que las llaves 'id' y 'data' NO se encuentren directamente dentro
+         * de la llave 'data', sino que se encuentren dentro de un objeto, se quiere que tambien
+         * se un caso exitoso.
+         */
+        $this->patchJson('test_route', [
+            'data' => [
+                [
+                    'id' => '1',
+                    'type' => 'string'
+                ]
+            ]
+        ])->assertSuccessful();
     }
 
     /** @test */

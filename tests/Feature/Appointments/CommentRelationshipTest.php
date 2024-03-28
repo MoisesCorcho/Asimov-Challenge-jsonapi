@@ -2,10 +2,11 @@
 
 namespace Tests\Feature\Appointments;
 
-use App\Models\Appointment;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
+use App\Models\Comment;
+use App\Models\Appointment;
+use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 /**
  * Este archivo contiene un conjunto de pruebas para verificar las relaciones
@@ -66,14 +67,12 @@ class CommentRelationshipTest extends TestCase
     /** @test */
     public function can_fetch_the_associated_comments_resource(): void
     {
-        // Se crea un Appointment sin comentarios.
         $appointment = Appointment::factory()->hasComments(2)->create();
 
         $url = route('api.v1.appointments.comments', $appointment);
 
         $response = $this->getJson($url);
 
-        // La llave data debe tener 0 elementos, es decir, un array vacio.
         $response->assertJson([
             'data' => [
                 [
@@ -92,6 +91,48 @@ class CommentRelationshipTest extends TestCase
                 ],
             ]
         ]);
+
+    }
+
+    /** @test */
+    public function can_update_the_associated_comments(): void
+    {
+        // Internamente se crean dos comentarios cada uno asociado a un Appointment distinto
+        // Es decir, que para este momento hay 2 comentarios y 2 Appointments en base de datos.
+        $comments = Comment::factory(2)->create();
+
+        // Se crea un Appointment al que se le van a asociar los comentarios a traves de la API.
+        $appointment = Appointment::factory()->create();
+
+        $url = route('api.v1.appointments.relationships.comments', $appointment);
+
+        $response = $this->patchJson($url, [
+            'data' => [
+                [
+                    'type' => 'comments',
+                    'id' => (string) $comments[0]->getRouteKey()
+                ],
+                [
+                    'type' => 'comments',
+                    'id' => (string) $comments[1]->getRouteKey()
+                ],
+            ]
+        ])->dump();
+
+        $response->assertJsonCount(2, 'data');
+
+        // Se espera que la respuesta contenga los fragmentos de JSON especificados.
+        $comments->map(fn ($comment) => $response->assertJsonFragment([
+            'type' => 'comments',
+            'id' => (string) $comment->getRouteKey()
+        ]));
+
+        // Se espera que en la tabla 'comments' en la base de datos existan los campos
+        // 'body' y 'appointment_id' con sus respectivos valores.
+        $comments->map(fn ($comment) => $this->assertDatabaseHas('comments', [
+            'body' => $comment->body,
+            'appointment_id' => (string) $appointment->id
+        ]));
 
     }
 }

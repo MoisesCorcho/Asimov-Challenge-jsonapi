@@ -20,10 +20,21 @@ class ValidateJsonApiDocument
         if ($request->isMethod('POST') || $request->isMethod('PATCH')) {
             $request->validate([
                 'data' => ['required', 'array'],
-                'data.type' => ['required', 'string'],
+                'data.type' => [
+                    /** Solo será requerido este campo en caso de que el primer elemento (0) del array 'data'
+                     * NO contenga la llave 'type', en caso que SI la contenga, no será requerido.
+                     * Esta regla será de ayuda para los casos en donde se mandan varios elementos
+                     * dentro de 'data', ya que en este caso, cada elemento irá dentro de su propio array*/
+                    'required_without:data.0.type',
+                    'string'
+                ],
                 'data.attributes' => [
                     Rule::requiredIf(
                         ! Str::of(request()->url())->contains('relationships')
+                        /** Solo será requerida la llave 'attributes' dentro de 'data', en caso de que NO
+                         * exista la llave 'type' dentro del primer elemento dentro de 'data'.
+                         */
+                        && request()->isNotFilled('data.0.type')
                     ),
                     'array'
                 ]
@@ -32,7 +43,14 @@ class ValidateJsonApiDocument
 
         if ($request->isMethod('PATCH')) {
             $request->validate([
-                'data.id' => ['required', 'string']
+                'data.id' => [
+                    /** Solo será requerido este campo en caso de que el primer elemento (0) del array 'data'
+                     * NO contenga la llave 'id', en caso que SI la contenga, no será requerido.
+                     * Esta regla será de ayuda para los casos en donde se mandan varios elementos
+                     * dentro de 'data', ya que en este caso, cada elemento irá dentro de su propio array*/
+                    'required_without:data.0.id',
+                    'string'
+                ]
             ]);
         }
 
