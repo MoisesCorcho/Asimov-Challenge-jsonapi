@@ -7,6 +7,11 @@ use App\Models\Appointment;
 use App\Models\Category;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
+/**
+ * Esta clase se encarga de probar la relación entre las citas (Appointment)
+ * y las categorías (Category). Esta clase contiene varios métodos de prueba
+ * que verifican diferentes aspectos de esta relación.
+ */
 class CategoryRelationshipTest extends TestCase
 {
 

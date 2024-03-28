@@ -38,7 +38,7 @@ Trait JsonApiResource
             ->toArray();
     }
 
-     /**
+    /**
      * Funcion para crear el documento JSON:API para las rutas de self de varios modelos.
      * Ej. 'api/v1/appointments/{appointment}/relationships/comments'
      *
@@ -208,6 +208,7 @@ Trait JsonApiResource
             foreach ($resources as $resource) {
 
                 // $resource->getIncludes() retorna un arreglo con las categorias de cada appointment.
+                // Es un metodo personalizado (No viene con Laravel).
                 foreach( $resource->getIncludes() as $include) {
 
                     /** En caso de que se reciban objetos de relaciones que no se hayan
@@ -229,7 +230,7 @@ Trait JsonApiResource
             }
         }
 
-        $collection->with['links'] = ['self' => $resources->path()];
+        $collection->with['links'] = ['self' => request()->path()];
 
         return $collection;
     }

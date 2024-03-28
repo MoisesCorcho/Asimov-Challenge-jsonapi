@@ -8,6 +8,11 @@ use App\Models\Appointment;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
+/**
+ * Este archivo encarga de probar la relación entre los comentarios
+ * (Comment) y las citas (Appointment). Esta clase contiene varios
+ * métodos de prueba que verifican diferentes aspectos de esta relación.
+ */
 class AppointmentRelationshipTest extends TestCase
 {
 

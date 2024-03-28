@@ -73,6 +73,10 @@ Route::prefix('appointments/{appointment}')->group(function () {
         Route::get('relationships/comments', 'index')
             ->name('appointments.relationships.comments');
 
+        // Obtener los Comentarios relacionados al Appointment.
+        Route::get('relationships', 'show')
+            ->name('appointments.comments');
+
     });
 
 });

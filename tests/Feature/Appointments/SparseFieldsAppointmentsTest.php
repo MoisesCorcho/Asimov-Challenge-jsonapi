@@ -6,6 +6,13 @@ use App\Models\Appointment;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
+/**
+ * Este test se encarga de verificar el funcionamiento de la funcionalidad
+ * de campos escasos (sparse fields) en el contexto de las citas (Appointment).
+ * Esta clase de prueba garantiza que la API pueda responder correctamente a las
+ * solicitudes que especifican campos específicos a incluir o excluir en las
+ * respuestas JSON de las citas.
+ */
 class SparseFieldsAppointmentsTest extends TestCase
 {
 

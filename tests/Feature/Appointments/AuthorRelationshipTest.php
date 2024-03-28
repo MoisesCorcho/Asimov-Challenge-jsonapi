@@ -7,6 +7,11 @@ use App\Models\User;
 use App\Models\Appointment;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
+/**
+ * Esta clase se encarga de probar la relación entre las citas (Appointment)
+ * y los autores (User-Author). Esta clase contiene varios métodos de prueba
+ * que verifican diferentes aspectos de esta relación.
+ */
 class AuthorRelationshipTest extends TestCase
 {
 

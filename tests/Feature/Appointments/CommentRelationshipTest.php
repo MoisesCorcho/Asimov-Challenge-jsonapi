@@ -7,6 +7,13 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
+/**
+ * Este archivo contiene un conjunto de pruebas para verificar las relaciones
+ * entre citas (Appointments) y comentarios (Comments) en una aplicación.
+ * Estas pruebas se realizan para garantizar que las relaciones entre los
+ * modelos estén configuradas correctamente y que la API pueda proporcionar
+ * la información necesaria sobre estos recursos relacionados.
+ */
 class CommentRelationshipTest extends TestCase
 {
 
@@ -52,6 +59,38 @@ class CommentRelationshipTest extends TestCase
         // Se verifica que la respuesta sea un arraglo vacio asociado a la clave 'data'.
         $response->assertExactJson([
             'data' => []
+        ]);
+
+    }
+
+    /** @test */
+    public function can_fetch_the_associated_comments_resource(): void
+    {
+        // Se crea un Appointment sin comentarios.
+        $appointment = Appointment::factory()->hasComments(2)->create();
+
+        $url = route('api.v1.appointments.comments', $appointment);
+
+        $response = $this->getJson($url);
+
+        // La llave data debe tener 0 elementos, es decir, un array vacio.
+        $response->assertJson([
+            'data' => [
+                [
+                    'id' => $appointment->comments[0]->getRouteKey(),
+                    'type' => 'comments',
+                    'attributes' => [
+                        'body' => $appointment->comments[0]->body
+                    ]
+                ],
+                [
+                    'id' => $appointment->comments[1]->getRouteKey(),
+                    'type' => 'comments',
+                    'attributes' => [
+                        'body' => $appointment->comments[1]->body
+                    ]
+                ],
+            ]
         ]);
 
     }

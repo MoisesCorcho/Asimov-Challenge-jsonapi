@@ -13,4 +13,9 @@ class AppointmentCommentController extends Controller
     {
         return CommentResource::identifiers($appointment->comments);
     }
+
+    public function show(Appointment $appointment)
+    {
+        return CommentResource::collection($appointment->comments);
+    }
 }

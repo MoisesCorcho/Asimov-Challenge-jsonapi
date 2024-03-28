@@ -7,6 +7,30 @@ use App\Models\Category;
 use App\Models\Appointment;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
+/**
+ * Este archivo se utiliza para verificar el correcto funcionamiento de los
+ * filtros en las respuestas JSON de las citas (Appointments). Esto es crucial
+ * para garantizar que la API cumpla con los requisitos de búsqueda y filtrado
+ * según lo especificado por la especificación JSON:API.
+ *
+ * En la especificación JSON:API, los filtros son parámetros de consulta que
+ * permiten a los clientes solicitar un subconjunto específico de recursos que
+ * cumplan con ciertos criterios. Los filtros se aplican a las colecciones de
+ * recursos y son útiles cuando se desea recuperar solo los recursos que coincidan
+ * con ciertas condiciones.
+ *
+ * El formato general para especificar filtros en una solicitud JSON:API es agregar
+ *  un parámetro de consulta llamado filter seguido de los criterios de filtro
+ * específicos. Los filtros pueden ser simples o complejos, dependiendo de las
+ * necesidades del cliente y de la implementación del servidor.
+ *
+ * Ej. GET /api/v1/appointments?filter[date]=2025-01-01
+ *
+ * En este ejemplo, la solicitud está solicitando todas las citas que tengan la
+ * fecha igual a '2025-01-01'. El parámetro de consulta filter[date] indica que
+ * se debe aplicar un filtro a la fecha de las citas, y el valor '2025-01-01'
+ * especifica el valor que se debe coincidir.
+ */
 class FilterAppointmentsTest extends TestCase
 {
 

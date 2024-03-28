@@ -6,6 +6,23 @@ use Tests\TestCase;
 use App\Models\Appointment;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
+/**
+ * Este archivo se utiliza para verificar el funcionamiento de la inclusión
+ * de categorías relacionadas en las respuestas JSON de las citas (Appointments).
+ * Este tipo de prueba es esencial cuando se trabaja con una API que sigue la
+ * especificación JSON:API, ya que esta especificación permite incluir recursos
+ * relacionados en una única solicitud, lo que reduce la necesidad de realizar
+ * múltiples solicitudes para obtener datos relacionados.
+ *
+ * La inclusión de recursos relacionados (categoria en este caso) mediante el
+ * parámetro include permite que la respuesta de un endpoint incluya no solo
+ * el recurso solicitado directamente, sino también recursos relacionados que
+ * podrían ser útiles para el cliente que consume la API. Esto reduce la
+ * necesidad de realizar múltiples solicitudes al servidor para obtener
+ * información adicional relacionada.
+ *
+ * Ej. GET /api/v1/appointments/1?include=category
+ */
 class IncludeCategoryTest extends TestCase
 {
 
