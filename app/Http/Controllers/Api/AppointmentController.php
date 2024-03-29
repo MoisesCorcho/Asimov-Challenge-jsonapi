@@ -60,7 +60,7 @@ class AppointmentController extends Controller
     public function show($appointment): JsonResource
     {
         $appointment = Appointment::where('id', $appointment)
-            ->allowedIncludes(['category', 'author'])
+            ->allowedIncludes(['category', 'author', 'comments'])
             ->sparseFieldset()
             ->firstOrFail();
 

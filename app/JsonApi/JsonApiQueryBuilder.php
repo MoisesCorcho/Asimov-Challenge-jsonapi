@@ -87,6 +87,12 @@ class JsonApiQueryBuilder
      * Esta funcion (Macro) hace la precarga de relaciones en caso de que
      * sea un include (relacion) permitido.
      *
+     * Se debe recordar, que se deben añadir las relaciones que se quieran
+     * incluir en el metodo 'getIncludes' dentro del LaravelResource, el cual
+     * a su vez, debe estar usando el Trait 'JsonApiResource'.
+     *
+     * Ej. CategoryResource::make($this->whenLoaded('category'))
+     *
      * @param array $allowedIncludes Los includes permitidos. (Se recibe en el Closure).
      *
      * @return Closure

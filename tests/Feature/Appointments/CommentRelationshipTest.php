@@ -117,7 +117,7 @@ class CommentRelationshipTest extends TestCase
                     'id' => (string) $comments[1]->getRouteKey()
                 ],
             ]
-        ])->dump();
+        ]);
 
         $response->assertJsonCount(2, 'data');
 

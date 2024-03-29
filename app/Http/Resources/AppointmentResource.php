@@ -46,7 +46,9 @@ class AppointmentResource extends JsonResource
         // Se utiliza $this->whenLoaded() para verificar si la relación ha sido precargada.
         return [
             CategoryResource::make($this->whenLoaded('category')),
-            AuthorResource::make($this->whenLoaded('author'))
+            AuthorResource::make($this->whenLoaded('author')),
+            // Se llama al metodo collection ya que es una relacion de uno a muchos.
+            CommentResource::collection($this->whenLoaded('comments'))
         ];
     }
 

@@ -79,6 +79,21 @@ Trait JsonApiResource
             // $resource->getIncludes() retorna un arreglo con las categorias de cada appointment.
             foreach( $this->getIncludes() as $include) {
 
+                /** En caso de que se reciba la instancia de una Collection se
+                 * va a recorrer dicha coleccion y se van a incluir sus elementos
+                 * a la llave 'included', luego de esto, se debe hacer un 'continue'
+                 * es decir, se va a pasar al siguiente elemento en el foreach(), esto
+                 * para evitar que se siga ejecutando este loop y se añada a la
+                 * llave contenido que no se quiere.
+                */
+                if ($include->resource instanceof Collection) {
+                    foreach ($include->resource as $resource) {
+                        $this->with['included'][] = $resource;
+                    }
+
+                    continue;
+                }
+
                 /** En caso de que se reciban objetos de relaciones que no se hayan
                  * especificado para precargar, se recibe una instancia de
                  * MissingValue, debido a la funcion whenLoaded().
@@ -204,8 +219,8 @@ Trait JsonApiResource
 
         if (request()->filled('include')) {
 
-            // $resources - retorna una coleccion de recursos.
-            foreach ($resources as $resource) {
+            // $resources - debe retornar una coleccion de recursos.
+            foreach ($collection->resource as $resource) {
 
                 // $resource->getIncludes() retorna un arreglo con las categorias de cada appointment.
                 // Es un metodo personalizado (No viene con Laravel).
