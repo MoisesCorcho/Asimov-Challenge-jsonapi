@@ -75,7 +75,7 @@ Route::prefix('appointments/{appointment}')->group(function () {
 
         // Actualizar los Comentarios relacionados al Appointment.
         Route::patch('relationships/comments', 'update')
-        ->name('appointments.relationships.comments');
+            ->name('appointments.relationships.comments');
 
         // Obtener los Comentarios relacionados al Appointment.
         Route::get('relationships', 'show')
@@ -89,7 +89,7 @@ Route::prefix('appointments/{appointment}')->group(function () {
 // y que de esta manera la ruta sea mas corta.
 Route::prefix('comments/{comment}')->group(function () {
 
-    // Son rutas necesarias para generar los links de las relaciones (self y related) de Appointment
+    // Son rutas necesarias para generar los links de las relaciones (self y related) de Comment
     // (El Appointment relacionado a los Comentarios)
     Route::controller(CommentAppointmentController::class)->group(function () {
 
@@ -106,6 +106,8 @@ Route::prefix('comments/{comment}')->group(function () {
             ->name('comments.appointment');
     });
 
+    // Son rutas necesarias para generar los links de las relaciones (self y related) de Author
+    // (El Autor relacionado a los Comentarios)
     Route::controller(CommentAuthorController::class)->group(function () {
 
         // Obtener el identificador del Autor asociado al Comentario.

@@ -27,7 +27,7 @@ class LoginController extends Controller
      * @param Request $request
      * @return void
      */
-    public function __invoke(Request $request)
+    public function __invoke(Request $request): TokenResponse
     {
         $request->validate([
             'email'       => ['required', 'email'],
