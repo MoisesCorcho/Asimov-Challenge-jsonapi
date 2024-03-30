@@ -16,4 +16,15 @@ class CommentResource extends JsonResource
             'body' => $this->body
         ];
     }
+
+    /**
+     * Se especifican las relaciones de los links que se quieran
+     * generar.
+     *
+     * @return array
+     */
+    public function getRelationshipLinks(): array
+    {
+        return ['appointment', 'author'];
+    }
 }

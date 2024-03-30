@@ -21,6 +21,8 @@ class ListCommentsTest extends TestCase
         $response->assertJsonApiResource($comment, [
             'body' => 'Comment Body'
         ]);
+
+        $response->assertJsonApiRelationshipLinks($comment, ['appointment', 'author']);
     }
 
     /** @test */
