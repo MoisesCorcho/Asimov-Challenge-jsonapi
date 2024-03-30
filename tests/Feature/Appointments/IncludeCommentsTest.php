@@ -28,7 +28,7 @@ class IncludeCommentsTest extends TestCase
         ]);
 
         // Se hace la peticion de tipo GET a la ruta.
-        $response = $this->getJson($url);
+        $response = $this->getJson($url)->dump();
 
         // Se espera que dentro de la llave 'included' en la respuesta vengan dos objetos.
         $response->assertJsonCount(2, 'included');
@@ -41,5 +41,24 @@ class IncludeCommentsTest extends TestCase
                 'body' => $comment->body
             ]
         ]));
+    }
+
+    /** @test */
+    public function can_include_related_comments_of_multiple_appointments(): void
+    {
+        // Se crea un Appointment con dos comentarios asociados.
+        $appointment = Appointment::factory()->hasComments(2)->create();
+        $appointment2 = Appointment::factory()->hasComments(2)->create();
+
+        // appointments?include=comments
+        $url = route('api.v1.appointments.index', [
+            'include' => 'comments',
+        ]);
+
+        // Se hace la peticion de tipo GET a la ruta.
+        $response = $this->getJson($url)->dump();
+
+        // Se espera que dentro de la llave 'included' en la respuesta vengan dos objetos.
+        $response->assertJsonCount(4, 'included');
     }
 }

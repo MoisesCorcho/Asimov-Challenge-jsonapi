@@ -27,7 +27,7 @@ class AppointmentController extends Controller
     public function index(): AnonymousResourceCollection
     {
         $appointments = Appointment::query()
-            ->allowedIncludes(['category', 'author'])
+            ->allowedIncludes(['category', 'author', 'comments'])
             ->allowedFilters(['date', 'year', 'month', 'start_time', 'email', 'categories'])
             ->allowedSorts(['date', 'start_time'])
             ->sparseFieldset()

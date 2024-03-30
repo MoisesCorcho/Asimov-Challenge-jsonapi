@@ -215,8 +215,13 @@ Trait JsonApiResource
      */
     public static function collection($resources): AnonymousResourceCollection
     {
+
         $collection = parent::collection($resources);
 
+        /** La llave include se agrega con el metodo $this->with()
+         *  ya que debe estar al mismo nivel que la llave 'data' agregada
+         *  de manera automatica por los LaravelResources.
+         */
         if (request()->filled('include')) {
 
             // $resources - debe retornar una coleccion de recursos.
@@ -225,6 +230,21 @@ Trait JsonApiResource
                 // $resource->getIncludes() retorna un arreglo con las categorias de cada appointment.
                 // Es un metodo personalizado (No viene con Laravel).
                 foreach( $resource->getIncludes() as $include) {
+
+                    /** En caso de que se reciba la instancia de una Collection se
+                     * va a recorrer dicha coleccion y se van a incluir sus elementos
+                     * a la llave 'included', luego de esto, se debe hacer un 'continue'
+                     * es decir, se va a pasar al siguiente elemento en el foreach(), esto
+                     * para evitar que se siga ejecutando este loop y se añada a la
+                     * llave contenido que no se quiere.
+                    */
+                    if ( $include->resource instanceof Collection ) {
+                        foreach ($include->resource as $resource) {
+                            $collection->with['included'][] = $resource;
+                        }
+
+                        continue;
+                    }
 
                     /** En caso de que se reciban objetos de relaciones que no se hayan
                      * especificado para precargar, se recibe una instancia de
