@@ -28,7 +28,7 @@ class IncludeCommentsTest extends TestCase
         ]);
 
         // Se hace la peticion de tipo GET a la ruta.
-        $response = $this->getJson($url)->dump();
+        $response = $this->getJson($url);
 
         // Se espera que dentro de la llave 'included' en la respuesta vengan dos objetos.
         $response->assertJsonCount(2, 'included');
@@ -56,7 +56,7 @@ class IncludeCommentsTest extends TestCase
         ]);
 
         // Se hace la peticion de tipo GET a la ruta.
-        $response = $this->getJson($url)->dump();
+        $response = $this->getJson($url);
 
         // Se espera que dentro de la llave 'included' en la respuesta vengan dos objetos.
         $response->assertJsonCount(4, 'included');
