@@ -8,6 +8,7 @@ use Illuminate\Auth\AuthenticationException;
 use Illuminate\Validation\ValidationException;
 use App\Http\Responses\JsonApiValidationErrorResponse;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Http\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
@@ -29,16 +30,22 @@ class Handler extends ExceptionHandler
      */
     public function register(): void
     {
-        $this->renderable(function (NotFoundHttpException $e) {
-            throw new JsonApi\NotFoundHttpException($e->getMessage());
+        $this->renderable(function (NotFoundHttpException $e, Request $request) {
+            // En caso de que la peticion CONTENGA los headers JSON:API, se ejecutará el codigo de la derecha
+            // Es decir, que se mostrará el error en formato JSON:API
+            $request->isJsonApi() && throw new JsonApi\NotFoundHttpException($e->getMessage());
         });
 
-        $this->renderable(function (BadRequestHttpException $e) {
-            throw new JsonApi\BadRequestHttpException($e->getMessage());
+        $this->renderable(function (BadRequestHttpException $e, Request $request) {
+            // En caso de que la peticion CONTENGA los headers JSON:API, se ejecutará el codigo de la derecha
+            // Es decir, que se mostrará el error en formato JSON:API
+            $request->isJsonApi() && throw new JsonApi\BadRequestHttpException($e->getMessage());
         });
 
-        $this->renderable(function (AuthenticationException $e) {
-            throw new JsonApi\AuthenticationException();
+        $this->renderable(function (AuthenticationException $e, Request $request) {
+            // En caso de que la peticion CONTENGA los headers JSON:API, se ejecutará el codigo de la derecha
+            // Es decir, que se mostrará el error en formato JSON:API
+            $request->isJsonApi() && throw new JsonApi\AuthenticationException();
         });
     }
 

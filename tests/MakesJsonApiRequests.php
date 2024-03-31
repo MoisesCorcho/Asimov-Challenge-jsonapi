@@ -12,6 +12,9 @@ trait MakesJsonApiRequests
     public function withoutJsonApiHeaders()
     {
         $this->jsonApiHeaders = true;
+
+        // Se retorna el objeto para que se puedan encadenar metodos.
+        return $this;
     }
 
     public function json($method, $uri, array $data = [], array $headers = [], $options = 0): TestResponse

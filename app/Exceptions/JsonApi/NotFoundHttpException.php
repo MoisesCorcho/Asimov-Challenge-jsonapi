@@ -14,11 +14,11 @@ class NotFoundHttpException extends Exception
          *
          * Ej. 'api/route'
          */
-        $detail = "The route {$request->path()} could not be found.";
+        $detail = $this->getMessage();
 
         /** Para cuando se intente acceder a rutas que comienzan con el prefijo 'api'
          * y que SI tiene un modelo asociado como lo son las rutas para los metodos
-         * 'show' o 'update'
+         * 'show' o 'update'.
          *
          * Ej. 'api/v1/appointments/1'
          */

@@ -26,6 +26,12 @@ class JsonApiRequest
         return function() {
             /** @var Request $this */
 
+            // Si el path NO empieza con el prefijo 'api' entonces NO se considera como
+            // una peticion JSON:API
+            if ( ! str($this->path())->startsWith('api') ) {
+                return false;
+            }
+
             if ($this->header('accept') === 'application/vnd.api+json') {
                 return true;
             }
