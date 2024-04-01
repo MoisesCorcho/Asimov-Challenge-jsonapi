@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Responses;
+namespace App\JsonApi\Http\Responses;
 
 use Illuminate\Http\JsonResponse;
 use Illuminate\Validation\ValidationException;

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Exceptions\JsonApi;
+namespace App\JsonApi\Exceptions;
 
 use Exception;
 

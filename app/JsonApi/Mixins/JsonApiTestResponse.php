@@ -1,6 +1,6 @@
 <?php
 
-namespace App\JsonApi;
+namespace App\JsonApi\Mixins;
 
 use Closure;
 use Illuminate\Support\Str;
