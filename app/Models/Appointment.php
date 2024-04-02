@@ -122,11 +122,13 @@ class Appointment extends Model
             return true;
         }
 
-        $existingAppointments = Appointment::where(function ($query) use ($scheduledFor, $endOfAppointment) {
-            $query->where('start_time', '<', $endOfAppointment->format('H:i'))
+        $existingAppointments = Appointment::where(function ($query) use ($scheduledFor, $endOfAppointment, $date) {
+            $query->where('date', $date)
+                ->where('start_time', '<', $endOfAppointment->format('H:i'))
                 ->where('start_time', '>=', $scheduledFor->format('H:i'));
-        })->orWhere(function ($query) use ($scheduledFor, $appointmentOneHourBefore) {
-            $query->where('start_time', '<=', $scheduledFor->format('H:i'))
+        })->orWhere(function ($query) use ($scheduledFor, $appointmentOneHourBefore, $date) {
+            $query->where('date', $date)
+                ->where('start_time', '<=', $scheduledFor->format('H:i'))
                 ->where('start_time', '>', $appointmentOneHourBefore->format('H:i'));
         })->exists();
 

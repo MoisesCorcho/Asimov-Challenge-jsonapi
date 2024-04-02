@@ -138,7 +138,7 @@ class JsonApiTestResponse
         return function ($model, $attributes) {
 
             /** @var TestResponse $this */
-            return $this->assertJson([
+            $this->assertJson([
                 'data' => [
                     'type' => $model->getResourceType(),
                     'id' => (string) $model->getRouteKey(),
@@ -147,10 +147,17 @@ class JsonApiTestResponse
                         'self' => route('api.v1.'.$model->getResourceType().'.show', $model)
                     ]
                 ]
-            ])->assertHeader(
-                'Location',
-                route('api.v1.'.$model->getResourceType().'.show', $model)
-            );
+            ]);
+
+            // Se debe verificar el header Location solo cuando se haya creado un nuevo recurso.
+            if ($this->status() === 201) {
+                $this->assertHeader(
+                    'Location',
+                    route('api.v1.'.$model->getResourceType().'.show', $model)
+                );
+            }
+
+            return $this;
         };
     }
 

@@ -27,6 +27,12 @@ class SaveAppointmentRequest extends FormRequest
     public function rules(): array
     {
         return [
+            // El tipo de dato debe ser especificamente 'appointments'
+            'data.type' => ['required', 'in:appointments'],
+            'data.id' => [
+                Rule::requiredIf( $this->route('appointment') ),
+                Rule::exists('appointments', 'id')
+            ],
             'data.attributes.date' => [
                 'required',
                 'date_format:Y-m-d',
@@ -49,7 +55,11 @@ class SaveAppointmentRequest extends FormRequest
                 Rule::requiredIf( ! $this->route('appointment') ),
                 Rule::exists('categories', 'id')
             ],
-            'data.relationships.author' => []
+            'data.relationships.author.data.id' => [
+                // Solo será requerido si no se tiene un appointment en la ruta, es decir, si no se está actualizando.
+                Rule::requiredIf( ! $this->route('appointment') ),
+                Rule::exists('users', 'id')
+            ]
         ];
     }
 

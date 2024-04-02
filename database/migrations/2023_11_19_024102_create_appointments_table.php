@@ -16,10 +16,6 @@ return new class extends Migration
             $table->date('date');
             $table->time('start_time');
             $table->string('email');
-
-            $table->foreignId('category_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
-            $table->foreignUuid('user_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
-
             $table->timestamps();
         });
     }

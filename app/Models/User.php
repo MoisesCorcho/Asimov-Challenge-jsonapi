@@ -52,6 +52,11 @@ class User extends Authenticatable
         return $this->BelongsToMany(Permission::class);
     }
 
+    public function appointments()
+    {
+        return $this->hasMany(Appointment::class);
+    }
+
     /**
      * Añadir un permiso al modelo.
      *

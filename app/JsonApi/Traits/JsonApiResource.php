@@ -163,10 +163,13 @@ Trait JsonApiResource
      */
     public function withResponse(Request $request, JsonResponse $response)
     {
-        $response->header(
-            'Location',
-            route('api.v1.'.$this->getResourceType().'.show', $this)
-        );
+        // Se debe mandar el header Location unicamente cuando se ha creado un recurso.
+        if ($response->status() === 201) {
+            $response->header(
+                'Location',
+                route('api.v1.'.$this->getResourceType().'.show', $this)
+            );
+        }
     }
 
     /**
