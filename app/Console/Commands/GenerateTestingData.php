@@ -62,8 +62,22 @@ class GenerateTestingData extends Command
         ]);
 
         // Crea múltiples citas con comentarios relacionados y establece la misma hora de inicio para todas las citas
-        $appointments = Appointment::factory(14)->hasComments(5)->create([
+        $appointments = Appointment::factory(4)->hasComments(5)->create([
+            'date' => '2024-05-02',
             'start_time' => '10:00'
+        ]);
+
+        $appointments = Appointment::factory(4)->hasComments(5)->create([
+            'date' => '2024-07-03',
+            'start_time' => '10:20'
+        ]);
+
+        $appointments = Appointment::factory(4)->hasComments(5)->create([
+            'start_time' => '12:00'
+        ]);
+
+        $appointments = Appointment::factory(4)->hasComments(5)->create([
+            'start_time' => '09:35'
         ]);
 
         // Muestra por consola la UUID del usuario creado

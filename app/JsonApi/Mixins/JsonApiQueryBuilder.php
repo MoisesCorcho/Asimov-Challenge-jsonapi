@@ -75,6 +75,7 @@ class JsonApiQueryBuilder
                  */
                 $this->hasNamedScope($filter)
                     ? $this->{$filter}($value)
+                        // Este es el filtro por defecto en caso de que no se encuentren Scopes.
                     : $this->where($filter, 'LIKE', '%'.$value.'%');
 
             }

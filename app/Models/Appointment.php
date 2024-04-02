@@ -210,11 +210,36 @@ class Appointment extends Model
         $query->whereMonth('date', $month);
     }
 
+    /**
+     * Query Scope para filtra por multiples categorias
+     *
+     * @param Builder $query
+     * @param string $categories
+     * @return void
+     */
     public function scopeCategories(Builder $query, $categories)
     {
         $categoryIds = explode(',', $categories);
 
         $query->whereIn('category_id', $categoryIds);
+    }
+
+    /**
+     * Query Scope para filtrar por multiples autores
+     *
+     * @param Builder $query
+     * @param string $authors
+     * @return void
+     */
+    public function scopeAuthors(Builder $query, $authors)
+    {
+        $authorNames = explode(',', $authors);
+
+        // El metodo whereHas se ejecuta siempre y cuando contenga una relacion
+        // en este caso la relacion 'author'.
+        $query->whereHas('author', function ($q) use($authorNames) {
+            $q->where('name', $authorNames);
+        });
     }
 
 }
