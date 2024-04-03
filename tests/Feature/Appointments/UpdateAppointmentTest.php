@@ -68,7 +68,7 @@ class UpdateAppointmentTest extends TestCase
 
         $response->assertJsonApiResource($appointment2, [
             'date' => $appointment2->date,
-            'start_time' => $appointment2->start_time,
+            'start-time' => $appointment2->start_time,
             'email' => $appointment2->email
         ]);
     }
@@ -110,7 +110,7 @@ class UpdateAppointmentTest extends TestCase
 
         $response->assertJsonApiResource($appointment, [
             'date' => '2026-01-01',
-            'start_time' => '10:00',
+            'start-time' => '10:00',
             'email' => 'updatedupdatedfalseemail@gmail.com'
         ]);
 

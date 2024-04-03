@@ -22,7 +22,7 @@ class ListAppointmentTest extends TestCase
 
         $response->assertJsonApiResource($appointment, [
             'date' => $appointment->date,
-            'start_time' => $appointment->start_time,
+            'start-time' => $appointment->start_time,
             'email' => $appointment->email
         ])->assertJsonApiRelationshipLinks($appointment, ['category', 'author']);
     }
@@ -37,7 +37,7 @@ class ListAppointmentTest extends TestCase
         $response = $this->getJson(route('api.v1.appointments.index'));
 
         $response->assertJsonApiResourceCollection($appointments, [
-            'date', 'start_time', 'email'
+            'date', 'start-time', 'email'
         ]);
     }
 

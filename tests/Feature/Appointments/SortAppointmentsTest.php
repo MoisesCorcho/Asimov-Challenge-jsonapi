@@ -66,7 +66,7 @@ class SortAppointmentsTest extends TestCase
             'start_time' => '11:00'
         ]);
 
-        $url = route('api.v1.appointments.index', ['sort' => 'start_time']);
+        $url = route('api.v1.appointments.index', ['sort' => 'start-time']);
 
         $this->getJson($url)->assertSeeInOrder([
             '09:00',
@@ -95,7 +95,7 @@ class SortAppointmentsTest extends TestCase
 
         // appointments?sort=start_time  -- Ascending
         // appointments?sort=-start_time -- Descending - The minus sign (-) is added in front of the field
-        $url = route('api.v1.appointments.index', ['sort' => '-start_time']);
+        $url = route('api.v1.appointments.index', ['sort' => '-start-time']);
 
         $this->getJson($url)->assertSeeInOrder([
             '14:00',
@@ -122,7 +122,7 @@ class SortAppointmentsTest extends TestCase
             'start_time' => '11:00'
         ]);
 
-        $url = route('api.v1.appointments.index', ['sort' => 'date,-start_time']);
+        $url = route('api.v1.appointments.index', ['sort' => 'date,-start-time']);
 
         $this->getJson($url)->assertSeeInOrder([
             '09:00',

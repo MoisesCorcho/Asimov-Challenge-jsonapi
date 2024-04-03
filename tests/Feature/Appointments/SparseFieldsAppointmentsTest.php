@@ -29,13 +29,13 @@ class SparseFieldsAppointmentsTest extends TestCase
         // appointments?fields[appointments]=date,start_time
         $url = route('api.v1.appointments.index', [
             'fields' => [
-                'appointments' => 'id,date,start_time'
+                'appointments' => 'id,date,start-time'
             ]
         ]);
 
         $this->getJson($url)->assertJsonFragment([
             'date' => $appointment->date,
-            'start_time' => $appointment->start_time
+            'start-time' => $appointment->start_time
         ])->assertJsonMissing([
             'email' => $appointment->email
         ])->assertJsonMissing([
@@ -55,13 +55,13 @@ class SparseFieldsAppointmentsTest extends TestCase
         $url = route('api.v1.appointments.show', [
             'appointment' => $appointment,
             'fields' => [
-                'appointments' => 'id,date,start_time'
+                'appointments' => 'id,date,start-time'
             ]
         ]);
 
         $this->getJson($url)->assertJsonFragment([
             'date' => $appointment->date,
-            'start_time' => $appointment->start_time
+            'start-time' => $appointment->start_time
         ])->assertJsonMissing([
             'email' => $appointment->email
         ])->assertJsonMissing([
@@ -86,7 +86,7 @@ class SparseFieldsAppointmentsTest extends TestCase
         $this->getJson($url)->assertJsonFragment([
             'date' => $appointment->date,
         ])->assertJsonMissing([
-            'start_time' => $appointment->start_time,
+            'start-time' => $appointment->start_time,
             'email' => $appointment->email
         ]);
     }
@@ -108,7 +108,7 @@ class SparseFieldsAppointmentsTest extends TestCase
         $this->getJson($url)->assertJsonFragment([
             'date' => $appointment->date,
         ])->assertJsonMissing([
-            'start_time' => $appointment->start_time,
+            'start-time' => $appointment->start_time,
             'email' => $appointment->email
         ]);
     }

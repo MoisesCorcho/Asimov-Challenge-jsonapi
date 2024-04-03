@@ -60,7 +60,7 @@ class CreateAppointmentTest extends TestCase
 
         $response->assertJsonApiResource($appointment, [
             'date' => $appointment->date,
-            'start_time' => substr($appointment->start_time, 0, 5),
+            'start-time' => substr($appointment->start_time, 0, 5),
             'email' => $appointment->email
         ]);
 

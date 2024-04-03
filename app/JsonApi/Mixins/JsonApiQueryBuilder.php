@@ -82,7 +82,7 @@ class JsonApiQueryBuilder
                  * con guiones medios, pero como en la base de datos el campos está
                  * escrito con guion medio, se debe hacer el cambio aqui.
                  */
-                $filter = str($filter)->replace('-', '_');
+                $filter = str($filter)->replace('-', '_')->toString();
 
                 /** El metodo hasNamedScope es util para verificar la existencias
                  * de un Scope en el modelo.

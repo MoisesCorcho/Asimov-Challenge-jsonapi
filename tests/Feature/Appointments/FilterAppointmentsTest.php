@@ -150,7 +150,7 @@ class FilterAppointmentsTest extends TestCase
 
         $url = route('api.v1.appointments.index', [
             'filter' => [
-                'start_time' => '10'
+                'start-time' => '10'
             ]
         ]);
 

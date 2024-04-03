@@ -55,7 +55,7 @@ class AppointmentRelationshipTest extends TestCase
                 'type' => 'appointments',
                 'attributes' => [
                     'date' => $comment->appointment->date,
-                    'start_time' => $comment->appointment->start_time,
+                    'start-time' => $comment->appointment->start_time,
                     'email' => $comment->appointment->email
                 ]
             ]
