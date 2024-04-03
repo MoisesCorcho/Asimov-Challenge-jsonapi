@@ -19,7 +19,7 @@ class AppointmentResource extends JsonResource
     {
         return [
             'date' => $this->date,
-            'start_time' => $this->start_time,
+            'start-time' => $this->start_time,
             'email' => $this->email
         ];
     }

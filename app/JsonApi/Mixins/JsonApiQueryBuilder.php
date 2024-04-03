@@ -44,6 +44,13 @@ class JsonApiQueryBuilder
                         throw new BadRequestHttpException("The sort field '{$sortField}' is not allowed in the '{$this->getResourceType()}' resource.");
                     }
 
+                    /** La convencion para pasar campos al ordenar es con guiones medios
+                     * con lo cual, aquellos campos que tengan guiones bajos, son mandados
+                     * con guiones medios, pero como en la base de datos el campos está
+                     * escrito con guion medio, se debe hacer el cambio aqui.
+                     */
+                    $sortField = str($sortField)->replace('-', '_');
+
                     $this->orderBy($sortField, $sortDirection);
                 }
             }
@@ -69,6 +76,13 @@ class JsonApiQueryBuilder
                 if ( !in_array($filter, $allowedFilters) ) {
                     throw new BadRequestHttpException("The filter '{$filter}' is not allowed in the '{$this->getResourceType()}' resource.");
                 }
+
+                /** La convencion para pasar campos al ordenar es con guiones medios
+                 * con lo cual, aquellos campos que tengan guiones bajos, son mandados
+                 * con guiones medios, pero como en la base de datos el campos está
+                 * escrito con guion medio, se debe hacer el cambio aqui.
+                 */
+                $filter = str($filter)->replace('-', '_');
 
                 /** El metodo hasNamedScope es util para verificar la existencias
                  * de un Scope en el modelo.
@@ -147,6 +161,15 @@ class JsonApiQueryBuilder
             if ( !in_array($getRouteKeyName, $fields) ) {
                 $fields[] = $getRouteKeyName;
             }
+
+            /** La convencion para pasar campos al ordenar es con guiones medios
+             * con lo cual, aquellos campos que tengan guiones bajos, son mandados
+             * con guiones medios, pero como en la base de datos el campos está
+             * escrito con guion medio, se debe hacer el cambio aqui.
+             */
+            $fields = array_map(function ($field) {
+                return str($field)->replace('-', '_');
+            }, $fields);
 
             return $this->addSelect($fields);
         };
