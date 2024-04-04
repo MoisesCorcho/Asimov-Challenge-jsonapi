@@ -18,6 +18,8 @@ class LoginController extends Controller
      */
     public function __construct()
     {
+        // Solo podran pasar hacia la funcion __invoke aquellos usuario que no hayan
+        // iniciado sesion.
         $this->middleware('guest:sanctum');
     }
 

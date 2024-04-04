@@ -12,6 +12,7 @@ use App\Http\Controllers\Api\CommentAuthorController;
 use App\JsonApi\Http\Middleware\ValidateJsonApiHeaders;
 use App\JsonApi\Http\Middleware\ValidateJsonApiDocument;
 use App\Http\Controllers\Api\AppointmentAuthorController;
+use App\Http\Controllers\Api\AuthenticatedUserController;
 use App\Http\Controllers\Api\AppointmentCommentController;
 use App\Http\Controllers\Api\CommentAppointmentController;
 use App\Http\Controllers\Api\AppointmentCategoryController;
@@ -132,6 +133,9 @@ Route::withoutMiddleware([
     ValidateJsonApiDocument::class,
     ValidateJsonApiHeaders::class
 ])->group(function() {
+    Route::get('user', AuthenticatedUserController::class)
+        ->middleware('auth:sanctum')
+        ->name('auth.user');
     Route::post('login', LoginController::class)->name('login');
     Route::post('logout', LogoutController::class)->name('logout');
     Route::post('register', RegisterController::class)->name('register');
