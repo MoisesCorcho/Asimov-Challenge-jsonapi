@@ -165,8 +165,12 @@ class JsonApiQueryBuilder
                     throw new BadRequestHttpException("The include relationship '{$include}' is not allowed in the '{$this->getResourceType()}' resource.");
                 }
 
-                if ( !in_array($include, $this->model->getModelRelationships()) ) {
-                    throw new BadRequestHttpException("The '{$include}' relationship does not exist");
+                // Se llamara al metodo 'getModelRelationships' solo en caso de que se haya
+                // implementado dentro del modelo.
+                if ( method_exists($this->model, 'getModelRelationships') ) {
+                    if ( !in_array($include, $this->model->getModelRelationships()) ) {
+                        throw new BadRequestHttpException("The '{$include}' relationship does not exist");
+                    }
                 }
 
                 // Añadimos el include para la precarga.
