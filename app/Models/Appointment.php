@@ -6,11 +6,12 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
+use App\JsonApi\Traits\HasModelsRelationship;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Appointment extends Model
 {
-    use HasFactory;
+    use HasFactory, HasModelsRelationship;
 
     protected $fillable = [];
 
@@ -32,6 +33,22 @@ class Appointment extends Model
     }
 
     /**
+     * Se registran los nombres de todas las relaciones establecidas
+     * en el modelo, este metodo es necesario para el correcto
+     * funcionamiento del Macro 'JsonApiQueryBuilder'.
+     *
+     * @return array
+     */
+    public function getModelRelationships(): array
+    {
+        return [
+            'category',
+            'author',
+            'comments',
+        ];
+    }
+
+    /**
      * Propiedad creada para la funcion sparseFielset dentro de la clase JsonApiQueryBuilder, la cual es usada
      * para un mixin, para añadir funcionalidad al modelo.
      */
@@ -49,50 +66,6 @@ class Appointment extends Model
 
         return $apmt;
     }
-
-    // function areThereCrossHoursPHP(string $time)
-    // {
-    //     $date = request()->input('data.attributes.date');
-
-    //     $apmt = DB::table('appointments')
-    //         ->select('start_time')
-    //         ->where('date', $date)
-    //         ->get();
-
-    //     $fecha_y_hora_1 = "{$date} {$time}";
-    //     $x2 = new DateTime($fecha_y_hora_1);
-
-    //     $response = $apmt->map( function($messages, $field) use ($time, $date, $x2) {
-
-    //         $fecha_y_hora_2 = "{$date} {$messages->start_time}";
-
-    //         $x1 = new DateTime($fecha_y_hora_2);
-
-    //         if (
-    //             ($x1->diff($x2)->i > 0 && $x1->diff($x2)->h == 0) ||
-    //             ($x1->diff($x2)->i == 0 && $x1->diff($x2)->h == 0)
-    //         ){
-    //             return true;
-    //         }
-
-    //     })->filter();
-
-    //     $fecha_y_hora_3 = "{$date} ".env('END_TIME');
-    //     $x3 = new DateTime($fecha_y_hora_3);
-
-    //     if (
-    //         ($x2->diff($x3)->h == 0 && $x2->diff($x3)->i > 0) ||
-    //         ($x2->diff($x3)->h == 0 && $x2->diff($x3)->i == 0)
-    //     ){
-    //         return true;
-    //     }
-
-    //     if ($response->isEmpty()) {
-    //         return false;
-    //     }
-
-    //     return true;
-    // }
 
     /**
      * Verifica si hay citas cruzadas para la hora proporcionada en la fecha recibida.
